@@ -3,7 +3,7 @@ const app = express();
 
 app.post("/posts", express.json(), (req, res, next) => {
   console.log(req.body);
-  res.send("post da post thatchanon");
+  res.send("post da post Love Thatchanon");
 });
 
 app.listen(8080, () => {
