@@ -5,7 +5,7 @@ const {
   getIdJob,
   getUpdateJob,
   deleteJob,
-} = require("../Controller/Job.controller");
+} = require("../Controller/job.controller");
 
 const router = express.Router();
 

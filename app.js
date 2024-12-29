@@ -17,6 +17,7 @@ const app = express(); //เรียกใช้ express
 const test = require("./src/Test/Router/test");
 const auth = require("./src/Test/Router/auth");
 const Job = require("./src/Jop/Routes/job.routes");
+const User = require("./src/User/Routes/user.routes");
 
 // Middleware
 app.use(morgan("dev"));
@@ -29,5 +30,6 @@ app.use("/api", auth);
 
 //feture main route
 app.use("/api", Job);
+app.use("/api", User);
 
 module.exports = app;
