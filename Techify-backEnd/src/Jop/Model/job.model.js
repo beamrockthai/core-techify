@@ -14,6 +14,10 @@ const Job = sequelize.define("Job", {
     type: DataTypes.STRING,
     allownull: false,
   },
+  IsActive: {
+    type: DataTypes.BOOLEAN,
+    allownull: false,
+  },
 });
 
 module.exports = Job;

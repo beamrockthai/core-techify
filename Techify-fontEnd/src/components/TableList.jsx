@@ -42,13 +42,15 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
                 <td>{job.JobName}</td>
                 <td>{job.Description}</td>
                 <td>{job.Location}</td>
+                <td>{job.IsActive}</td>
+
                 <td>
                   <button
                     className={`btn rounded-full w-20 ${
-                      job.isactive ? "btn-primary" : "btn-outline-primary"
+                      job.IsActive ? "btn-primary" : "btn-outline-primary"
                     }`}
                   >
-                    {job.isactive ? "เปิด" : "ปิด"}
+                    {job.IsActive ? "เปิด" : "ปิด"}
                   </button>
                 </td>
                 <td>
