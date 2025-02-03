@@ -7,6 +7,6 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["night"], //เปลียน theme ให้เป็น dark
+    themes: ["retro"], //เปลียน theme ให้เป็น dark
   },
 };

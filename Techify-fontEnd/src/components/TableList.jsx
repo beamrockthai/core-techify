@@ -1,65 +1,71 @@
-export default function TableList() {
-  // data
-  const job = [
-    {
-      id: 1,
-      JobName: "Backend",
-      Description: "สําหรับเทส",
-      Location: "Bangkok",
-      isactive: true,
-    },
-    {
-      id: 2,
-      JobName: "Frontend",
-      Description: "สําหรับเทส1",
-      Location: "Bangkok1",
-      isactive: true,
-    },
-    {
-      id: 3,
-      JobName: "Fullstack",
-      Description: "สําหรับเทส2",
-      Location: "Bangkok2",
-      isactive: false,
-    },
-  ];
+import { useState } from "react";
+import { deleteJob } from "../api/jobApi"; // นำเข้า API service
+
+export default function TableList({ handleOpen, tableData, setTableData }) {
+  const [error, setError] = useState(null);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("คุณต้องการลบข้อมูลใช่หรือไม่?");
+    if (confirmDelete) {
+      try {
+        await deleteJob(id);
+        setTableData((prev) => prev.filter((job) => job.id !== id));
+      } catch (error) {
+        console.error("Error deleting job:", error);
+        setError(error.message);
+      }
+    }
+  };
+
   return (
     <>
+      {error && <div className="text-red-500">{error}</div>}
+
       <div className="overflow-x-auto mt-10">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
               <th></th>
               <th>งาน</th>
               <th>รายละเอียด</th>
+              <th>ที่อยู่</th>
               <th>สถานะ</th>
+              <th>อัปเดทข้อมูล</th>
+              <th>ลบข้อมูล</th>
             </tr>
           </thead>
 
           <tbody className="hover">
-            {/* map function ไว้เรียกข้อมูลจากตัวแปร job */}
-            {/* row 1 */}
-
-            {job.map((job) => (
-              <tr>
+            {tableData.map((job) => (
+              <tr key={job.id}>
                 <th>{job.id}</th>
                 <td>{job.JobName}</td>
                 <td>{job.Description}</td>
+                <td>{job.Location}</td>
                 <td>
                   <button
                     className={`btn rounded-full w-20 ${
                       job.isactive ? "btn-primary" : "btn-outline-primary"
                     }`}
                   >
-                    {job.isactive ? "Active" : "Inactive"}
+                    {job.isactive ? "เปิด" : "ปิด"}
                   </button>
                 </td>
                 <td>
-                  <button className="btn btn-secondary">Update</button>
+                  <button
+                    onClick={() => handleOpen("edit", job)}
+                    className="btn btn-secondary"
+                  >
+                    Update
+                  </button>
                 </td>
                 <td>
-                  <button className="btn btn-accent">Delete</button>
+                  <button
+                    onClick={() => handleDelete(job.id)}
+                    className="btn btn-accent"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
