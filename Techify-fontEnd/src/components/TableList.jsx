@@ -21,6 +21,16 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
     <>
       {error && <div className="text-red-500">{error}</div>}
 
+      {/* ปุ่มประกาศงาน */}
+      <div className="flex justify-start mb-4">
+        <button
+          onClick={() => handleOpen("add")} // เปิด Modal ในโหมด "add"
+          className="btn btn-primary rounded-lg shadow-md px-6 py-2"
+        >
+          ประกาศงาน
+        </button>
+      </div>
+
       <div className="overflow-x-auto mt-10">
         <table className="table">
           <thead>
