@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../assets/logo1.jpg";
+import Logo from "../assets/logo.webp";
 
 export default function NavBar({ isLoggedIn }) {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function NavBar({ isLoggedIn }) {
       <div className="navbar bg-white px-4 lg:px-8 py-2">
         <div className="navbar-start">
           <Link to="/" className="flex items-center gap-4">
-            <img src={Logo} alt="Logo" className="h-10 w-10 rounded-full" />
+            <img src={Logo} alt="Logo" className="h-20 w-50 rounded-full" />
             <div>
               <p className="font-bold text-base">
                 องค์การบริหารส่วนจังหวัดนนทบุรี
