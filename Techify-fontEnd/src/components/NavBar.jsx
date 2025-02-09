@@ -1,18 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.webp";
+import { useState } from "react";
 
 export default function NavBar({ isLoggedIn }) {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // ลบ token
-    navigate("/login"); // กลับไปหน้า Login
-    window.location.reload(); // รีเฟรชสถานะ
+    localStorage.removeItem("token");
+    navigate("/login");
+    window.location.reload();
   };
 
   return (
     <div className="bg-base-100 shadow-lg">
       <div className="navbar bg-white px-4 lg:px-8 py-2">
+        {/* Logo Section */}
         <div className="navbar-start">
           <Link to="/" className="flex items-center gap-4">
             <img src={Logo} alt="Logo" className="h-20 w-50 rounded-full" />
@@ -27,7 +30,7 @@ export default function NavBar({ isLoggedIn }) {
           </Link>
         </div>
 
-        {/* Navbar Center */}
+        {/* Desktop Menu */}
         <div className="navbar-end hidden lg:flex w-full justify-end gap-4">
           {isLoggedIn ? (
             <ul className="menu menu-horizontal px-1 gap-4 text-sm">
@@ -70,11 +73,15 @@ export default function NavBar({ isLoggedIn }) {
           )}
         </div>
 
-        <div className="dropdown dropdown-end lg:hidden">
-          <label tabIndex={0} className="btn btn-ghost">
+        {/* Mobile Menu Button */}
+        <div className="navbar-end lg:hidden">
+          <button
+            className="btn btn-ghost"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -86,15 +93,20 @@ export default function NavBar({ isLoggedIn }) {
                 d="M4 6h16M4 12h8m-8 6h16"
               />
             </svg>
-          </label>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-sm"
-          >
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Items */}
+      {isMenuOpen && (
+        <div className="bg-white shadow-lg lg:hidden">
+          <ul className="menu menu-vertical p-4 text-sm">
             {isLoggedIn ? (
               <>
                 <li>
-                  <Link to="/jobs">หน้าหลัก</Link>
+                  <Link to="/main" className="hover:text-purple-600">
+                    หน้าหลัก
+                  </Link>
                 </li>
                 <li>
                   <Link to="/profile" className="hover:text-purple-600">
@@ -109,6 +121,11 @@ export default function NavBar({ isLoggedIn }) {
                 <li>
                   <Link to="/history" className="hover:text-purple-600">
                     ประวัติการสมัคร
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/jobs" className="hover:text-purple-600">
+                    ประกาศงาน
                   </Link>
                 </li>
                 <li>
@@ -129,7 +146,8 @@ export default function NavBar({ isLoggedIn }) {
             )}
           </ul>
         </div>
-      </div>
+      )}
+
       <div className="h-1 bg-purple-600"></div>
     </div>
   );

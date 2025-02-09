@@ -25,9 +25,9 @@ const sequelize = new Sequelize(
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ Connected to PostgreSQL using Sequelize");
+    console.log("✅ GoToGundum ");
   } catch (error) {
-    console.error("❌ Unable to connect to the database:", error.message);
+    console.error("❌ NoToGundum:", error.message);
   }
 })();
 

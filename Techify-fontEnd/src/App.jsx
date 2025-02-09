@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar";
 import JobPage from "./pages/๋JopPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ImageSide from "./components/ImageSide";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,6 +35,10 @@ function App() {
         <Route
           path="/jobs"
           element={isLoggedIn ? <JobPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/main" // เพิ่มเส้นทางใหม่
+          element={isLoggedIn ? <ImageSide /> : <Navigate to="/login" />}
         />
       </Routes>
     </>
