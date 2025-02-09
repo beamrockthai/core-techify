@@ -4,6 +4,7 @@ import { register } from "../api/authApi";
 import InputField from "../components/InputField";
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -21,9 +22,8 @@ const RegisterPage = () => {
   });
 
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false); // เพิ่มสถานะการรอ
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false); // ✅ Popup ยืนยันข้อมูล
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,198 +43,200 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const validateForm = () => {
+    return Object.values(formData).every((value) => value.trim() !== "");
+  };
 
-    // ตรวจสอบว่ากรอกข้อมูลครบทุกช่องหรือไม่
-    const isFormComplete = Object.values(formData).every(
-      (value) => value.trim() !== ""
-    );
-    if (!isFormComplete) {
-      setError("กรุณากรอกข้อมูลให้ครบ");
+  const handleSubmit = () => {
+    if (!validateForm()) {
+      setError("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
+    setError("");
+    setShowConfirmPopup(true);
+  };
 
-    setLoading(true); // เปิดสถานะการรอ
+  const handleRegister = async () => {
+    setError("");
+    setLoading(true);
+
     try {
       console.log("📡 Sending data to backend:", formData);
+
       const data = await register(formData);
       console.log("✅ Register successful:", data);
-      setError("");
-      setSuccess(true);
-      setTimeout(() => {
-        setLoading(false); // ปิดสถานะการรอ
-        navigate("/jobs");
-      }, 3000); // รอ 3 วินาทีก่อนเปลี่ยนหน้า
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        console.log("🔑 Token saved:", data.token);
+        window.location.href = "/jobs";
+      } else {
+        setError("สมัครสมาชิกสำเร็จ แต่ไม่ได้รับ Token");
+      }
     } catch (err) {
       console.error("❌ Register failed:", err);
       setError(err.message || "❌ Register failed");
-      setLoading(false); // ปิดสถานะการรอ
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="card w-full max-w-4xl bg-white shadow-xl p-5">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="card w-full max-w-lg sm:max-w-2xl lg:max-w-4xl bg-white shadow-xl p-5">
         <h2 className="text-2xl font-bold text-center mb-4">สมัครสมาชิก</h2>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        {success && (
-          <div className="modal modal-open">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">สมัครสมาชิกสำเร็จ!</h3>
-              <p>กำลังพาคุณไปยังหน้าใช้งาน...</p>
-            </div>
-          </div>
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
         )}
 
-        <form onSubmit={handleRegister} className="grid grid-cols-3 gap-4">
+        <form className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <InputField
             label="ชื่อจริง"
             type="text"
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            placeholder="กรอกชื่อจริง"
           />
-
           <InputField
             label="นามสกุล"
             type="text"
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            placeholder="กรอกนามสกุล"
           />
-
           <InputField
             label="อีเมล"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="กรอกอีเมล"
           />
-
           <InputField
             label="รหัสผ่าน"
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="กรอกรหัสผ่าน"
           />
-
           <InputField
             label="หมายเลขโทรศัพท์"
             type="text"
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            placeholder="กรอกหมายเลขโทรศัพท์"
           />
-
           <InputField
             label="เลขบัตรประชาชน"
             type="text"
             name="nationalId"
             value={formData.nationalId}
             onChange={handleChange}
-            placeholder="กรอกเลขบัตรประชาชน"
           />
-
           <InputField
             label="วันเดือนปีเกิด"
             type="date"
             name="birhDate"
             value={formData.birhDate}
             onChange={handleChange}
-            placeholder="เลือกวันเดือนปีเกิด"
           />
-
           <InputField
             label="บ้านเลขที่"
             type="text"
             name="houseNumber"
             value={formData.houseNumber}
             onChange={handleChange}
-            placeholder="กรอกบ้านเลขที่"
           />
-
           <InputField
             label="หมู่บ้าน"
             type="text"
             name="village"
             value={formData.village}
             onChange={handleChange}
-            placeholder="กรอกหมู่บ้าน"
           />
-
           <InputField
             label="จังหวัด"
             type="text"
             name="province"
             value={formData.province}
             onChange={handleChange}
-            placeholder="กรอกจังหวัด"
           />
-
           <InputField
             label="อำเภอ"
             type="text"
             name="district"
             value={formData.district}
             onChange={handleChange}
-            placeholder="กรอกอำเภอ"
           />
-
           <InputField
             label="ตำบล"
             type="text"
             name="subDistrict"
             value={formData.subDistrict}
             onChange={handleChange}
-            placeholder="กรอกตำบล"
           />
-
           <InputField
             label="รหัสไปรษณีย์"
             type="text"
             name="postalCode"
             value={formData.postalCode}
             onChange={handleChange}
-            placeholder="กรอกรหัสไปรษณีย์"
           />
-
-          <div className="col-span-3 flex justify-center gap-4 mt-6">
-            <button
-              className="btn btn-outline btn-primary w-full md:w-auto"
-              type="button"
-              onClick={() => navigate("/login")}
-            >
-              ย้อนกลับไปหน้าเข้าสู่ระบบ
-            </button>
-            <button
-              className={`btn btn-primary w-full md:w-auto ${
-                loading ? "btn-disabled" : ""
-              }`}
-              type="submit"
-              disabled={loading}
-            >
-              สมัครสมาชิก
-            </button>
-          </div>
         </form>
 
-        {loading && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-            <div className="bg-white p-4 rounded shadow-lg">
-              <p>กำลังดำเนินการสมัครสมาชิก...</p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
+          <button
+            className="btn btn-outline btn-primary w-full sm:w-auto"
+            onClick={() => navigate("/login")}
+          >
+            ย้อนกลับไปหน้าเข้าสู่ระบบ
+          </button>
+          <button
+            className="btn btn-primary w-full sm:w-auto"
+            onClick={handleSubmit}
+          >
+            สมัครสมาชิก
+          </button>
+        </div>
+      </div>
+
+      {/* ✅ Popup ยืนยันข้อมูล (รองรับ Responsive) */}
+      {showConfirmPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-lg w-full">
+            <h3 className="text-xl font-bold mb-3">ยืนยันข้อมูล</h3>
+            <p className="text-gray-600 mb-4">กรุณาตรวจสอบข้อมูลก่อนสมัคร</p>
+            <div className="grid grid-cols-1 gap-2 text-left text-sm">
+              <p>
+                <strong>ชื่อ:</strong> {formData.firstName} {formData.lastName}
+              </p>
+              <p>
+                <strong>อีเมล:</strong> {formData.email}
+              </p>
+              <p>
+                <strong>โทรศัพท์:</strong> {formData.phoneNumber}
+              </p>
+              <p>
+                <strong>จังหวัด:</strong> {formData.province}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+              <button
+                className="btn btn-outline btn-error w-full sm:w-auto"
+                onClick={() => setShowConfirmPopup(false)}
+              >
+                แก้ไข
+              </button>
+              <button
+                className="btn btn-success w-full sm:w-auto"
+                onClick={handleRegister}
+              >
+                ยืนยัน
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,8 @@
+const jwt = require("jsonwebtoken");
 const User = require("../Model/user.model");
 const bcrypt = require("bcrypt");
 
-//create function ก่อน
+// Create User (เหมือนเดิม)
 exports.createrUser = async (req, res) => {
   try {
     // เข้ารหัสรหัสผ่าน
@@ -12,13 +13,24 @@ exports.createrUser = async (req, res) => {
     // สร้าง User ใหม่
     const user = await User.create(req.body);
 
-    res.status(200).json({ success: true, data: user });
+    // ✅ สร้าง JWT Token ให้ User ทันทีหลังจากสมัครสมาชิก
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" } // Token ใช้ได้ 1 วัน
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Register successful",
+      token, // ✅ ส่ง Token กลับไปให้ Frontend ใช้งาน
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-//Login User
+// Login User (เพิ่ม JWT)
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -46,7 +58,20 @@ exports.loginUser = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
-    res.status(200).json({ success: true, message: "Login successful", user });
+    // สร้าง JWT Token
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d", // Token ใช้ได้ 1 วัน
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token, // ส่ง token กลับไปให้ Frontend ใช้งาน
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

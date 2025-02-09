@@ -1,98 +1,136 @@
-import { Link } from "react-router-dom";
-import Logo from "../assets/logo1.jpg"; // Import โลโก้
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/logo1.jpg";
 
-export default function NavBar({ onOpen }) {
+export default function NavBar({ isLoggedIn }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // ลบ token
+    navigate("/login"); // กลับไปหน้า Login
+    window.location.reload(); // รีเฟรชสถานะ
+  };
+
   return (
-    <>
-      {/* Navbar Container */}
-      <div className="bg-base-100 shadow-lg">
-        <div className="navbar bg-white">
-          {/* Navbar Start */}
-          <div className="navbar-start">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-4">
-              <img
-                src={Logo} // แสดงโลโก้
-                alt="Logo"
-                className="h-12 w-12 rounded-full" // ปรับขนาดโลโก้
-              />
-              <div>
-                <p className="font-bold text-lg">
-                  องค์การบริหารส่วนจังหวัดนนทบุรี
-                </p>
-                <p className="text-sm text-gray-500">
-                  Nonthaburi Provincial Administrative Organization
-                </p>
-              </div>
-            </Link>
-          </div>
-
-          {/* Navbar Center */}
-          <div className="navbar-end hidden lg:flex w-full justify-end">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <Link to="/">หน้าหลัก</Link>
-              </li>
-              <li>
-                <Link to="/profile">ข้อมูลส่วนตัว</Link>
-              </li>
-              <li>
-                <Link to="/apply">สมัครสอบ</Link>
-              </li>
-              <li>
-                <Link to="/history">ประวัติการสมัคร</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Navbar End
-          <div className="navbar-end">
-            <button className="btn btn-primary" onClick={onOpen}>
-              ประกาศงาน
-            </button>
-          </div> */}
-
-          {/* Dropdown for Mobile */}
-          <div className="dropdown dropdown-start lg:hidden">
-            <label tabIndex={0} className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <Link to="/">หน้าหลัก</Link>
-              </li>
-              <li>
-                <Link to="/profile">ข้อมูลส่วนตัว</Link>
-              </li>
-              <li>
-                <Link to="/apply">สมัครสอบ</Link>
-              </li>
-              <li>
-                <Link to="/history">ประวัติการสมัคร</Link>
-              </li>
-            </ul>
-          </div>
+    <div className="bg-base-100 shadow-lg">
+      <div className="navbar bg-white px-4 lg:px-8 py-2">
+        <div className="navbar-start">
+          <Link to="/" className="flex items-center gap-4">
+            <img src={Logo} alt="Logo" className="h-10 w-10 rounded-full" />
+            <div>
+              <p className="font-bold text-base">
+                องค์การบริหารส่วนจังหวัดนนทบุรี
+              </p>
+              <p className="text-xs text-gray-500">
+                Nonthaburi Provincial Administrative Organization
+              </p>
+            </div>
+          </Link>
         </div>
 
-        {/* Purple Border */}
-        <div className="h-1 bg-purple-600"></div>
+        {/* Navbar Center */}
+        <div className="navbar-end hidden lg:flex w-full justify-end gap-4">
+          {isLoggedIn ? (
+            <ul className="menu menu-horizontal px-1 gap-4 text-sm">
+              <li>
+                <Link to="/main" className="hover:text-purple-600">
+                  หน้าหลัก
+                </Link>
+              </li>
+              <li>
+                <Link to="/profile" className="hover:text-purple-600">
+                  ข้อมูลส่วนตัว
+                </Link>
+              </li>
+              <li>
+                <Link to="/apply" className="hover:text-purple-600">
+                  สมัครสอบ
+                </Link>
+              </li>
+              <li>
+                <Link to="/history" className="hover:text-purple-600">
+                  ประวัติการสมัคร
+                </Link>
+              </li>
+              <li>
+                <Link to="/jobs" className="hover:text-purple-600">
+                  ประกาศงาน
+                </Link>
+              </li>
+              <li>
+                <button
+                  className="btn btn-outline btn-primary text-sm"
+                  onClick={handleLogout}
+                >
+                  ออกจากระบบ
+                </button>
+              </li>
+            </ul>
+          ) : (
+            <p className="text-sm text-purple-600">กรุณาล็อกอิน</p>
+          )}
+        </div>
+
+        <div className="dropdown dropdown-end lg:hidden">
+          <label tabIndex={0} className="btn btn-ghost">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-sm"
+          >
+            {isLoggedIn ? (
+              <>
+                <li>
+                  <Link to="/jobs">หน้าหลัก</Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="hover:text-purple-600">
+                    ข้อมูลส่วนตัว
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/apply" className="hover:text-purple-600">
+                    สมัครสอบ
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/history" className="hover:text-purple-600">
+                    ประวัติการสมัคร
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    className="btn btn-outline btn-primary text-sm"
+                    onClick={handleLogout}
+                  >
+                    ออกจากระบบ
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li>
+                <p className="text-sm text-gray-500 text-center">
+                  กรุณาล็อกอิน
+                </p>
+              </li>
+            )}
+          </ul>
+        </div>
       </div>
-    </>
+      <div className="h-1 bg-purple-600"></div>
+    </div>
   );
 }

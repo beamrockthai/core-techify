@@ -1,55 +1,78 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // สำหรับเปลี่ยนเส้นทาง
+import { useNavigate } from "react-router-dom";
 import { login } from "../api/authApi";
-// import InputField from "../components/InputField";
-// import Button from "../components/button"; // ✅ เปลี่ยนเป็นตัวอักษรใหญ่
 
 const LoginPage = () => {
-  const navigate = useNavigate(); // ใช้เปลี่ยนหน้า
-  const [email, setEmail] = useState(""); // ✅ เปลี่ยนจาก setUsername เป็น setEmail
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [popupMessage, setPopupMessage] = useState(""); // ข้อความ Popup
+  const [isErrorPopup, setIsErrorPopup] = useState(false); // แยก Error Popup
+  const [shake, setShake] = useState(false); // ✅ เอฟเฟกต์สั่น
 
   const handleLogin = async () => {
+    setLoading(true);
+    setError("");
+    setPopupMessage("กำลังเข้าสู่ระบบ...");
+    setIsErrorPopup(false);
+
     try {
       const userData = { email, password };
       console.log("🔹 ส่งข้อมูลไปที่ Backend:", userData);
 
-      const response = await login(userData); // เรียก API
+      const response = await login(userData);
       console.log("✅ Login successful:", response);
 
-      // ✅ บันทึก token หรือข้อมูลผู้ใช้ลง localStorage
-      localStorage.setItem("user", JSON.stringify(response.user));
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        console.log("🔑 Token saved:", response.token);
 
-      // ✅ เปลี่ยนหน้าไปที่ Jobs
-      navigate("/jobs");
+        setTimeout(() => {
+          setPopupMessage("");
+          window.location.reload();
+        }, 2000);
+      } else {
+        setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        setPopupMessage("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        setIsErrorPopup(true);
+        setShake(true); // ✅ สั่น Popup
+      }
     } catch (err) {
       console.error("❌ Login failed:", err);
-      setError(err.message || "Login failed");
+      setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      setPopupMessage("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      setIsErrorPopup(true);
+      setShake(true); // ✅ สั่น Popup
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="card w-96 bg-white shadow-lg p-8 rounded-lg border border-gray-200">
+      <div className="card w-full max-w-sm bg-white shadow-lg p-8 rounded-lg border border-gray-200">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           เข้าสู่ระบบ
         </h2>
+
+        {/* แสดงข้อความ Error */}
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <div className="form-control mb-4">
           <label className="label">
-            <span className="label-text text-gray-700 font-medium">
-              ชื่อผู้ใช้
-            </span>
+            <span className="label-text text-gray-700 font-medium">อีเมล</span>
           </label>
           <input
-            type="text"
-            placeholder="กรุณากรอกชื่อผู้ใช้"
+            type="email"
+            placeholder="กรุณากรอกอีเมล"
             className="input input-bordered w-full border-gray-300"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
         <div className="form-control mb-6">
           <label className="label">
             <span className="label-text text-gray-700 font-medium">
@@ -64,21 +87,59 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+
         <button
-          className="btn btn-outline btn-primary w-full"
+          className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`}
           onClick={handleLogin}
+          disabled={loading}
         >
-          เข้าสู่ระบบ
+          {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
         </button>
+
         <div className="text-center mt-6">
           <p className="text-sm text-gray-700">
             ยังไม่มีบัญชีผู้ใช้?{" "}
-            <a href="/register" className="text-purple-600 underline">
+            <a href="/register" className="text-primary underline">
               ลงทะเบียน
             </a>
           </p>
         </div>
       </div>
+
+      {/* Popup แจ้งเตือน */}
+      {popupMessage && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 transition-opacity">
+          <div
+            className={`bg-white p-6 rounded-lg shadow-lg text-center relative max-w-xs sm:max-w-sm animate-fade-in ${
+              shake ? "animate-shake" : ""
+            }`}
+          >
+            {isErrorPopup ? (
+              <>
+                <button
+                  className="absolute top-2 right-2 btn btn-circle btn-sm btn-ghost text-gray-500 hover:text-gray-800"
+                  onClick={() => setPopupMessage("")}
+                >
+                  ✖
+                </button>
+                <div className="flex flex-col items-center">
+                  <span className="text-red-500 text-3xl">⚠️</span>
+                  <p className="text-lg font-semibold text-red-600 mt-2">
+                    {popupMessage}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center">
+                <span className="loading loading-spinner loading-lg text-primary mb-2"></span>
+                <p className="text-lg font-semibold text-gray-800">
+                  {popupMessage}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
