@@ -32,7 +32,7 @@ const LoginPage = () => {
         setTimeout(() => {
           setPopupMessage("");
           window.location.reload();
-        }, 2000);
+        }, 500);
       } else {
         setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
         setPopupMessage("อีเมลหรือรหัสผ่านไม่ถูกต้อง");

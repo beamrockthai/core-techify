@@ -23,7 +23,7 @@ const User = sequelize.define("User", {
   },
 
   phoneNumber: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allownull: false,
   },
   nationalId: {
@@ -67,6 +67,12 @@ const User = sequelize.define("User", {
   postalCode: {
     type: DataTypes.INTEGER,
     allownull: false,
+  },
+
+  role: {
+    type: DataTypes.ENUM("user", "admin"), // กำหนด Role ของผู้ใช้
+    allowNull: false,
+    defaultValue: "user",
   },
 
   body: {

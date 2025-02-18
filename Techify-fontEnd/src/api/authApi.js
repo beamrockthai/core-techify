@@ -6,12 +6,13 @@ export const login = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/login`, userData);
     if (response.data.success) {
-      // เก็บ Token ลงใน localStorage
-      localStorage.setItem("token", response.data.token);
+      // ✅ เก็บ Token ลงใน localStorage
+      localStorage.setItem("token", `Bearer ${response.data.token}`);
     }
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.error("❌ Login Error:", error.response?.data || error.message);
+    throw error.response?.data || { success: false, message: "Login failed" };
   }
 };
 
@@ -21,12 +22,16 @@ export const register = async (userData) => {
 
     if (response.data.token) {
       console.log("✅ Token received:", response.data.token);
+      localStorage.setItem("token", `Bearer ${response.data.token}`);
     } else {
-      console.log("🚨 No token received in register API");
+      console.warn("🚨 No token received in register API");
     }
 
-    return response.data; // ✅ ต้องมี token ใน response
+    return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.error("❌ Register Error:", error.response?.data || error.message);
+    throw (
+      error.response?.data || { success: false, message: "Registration failed" }
+    );
   }
 };

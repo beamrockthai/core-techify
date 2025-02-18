@@ -1,78 +1,98 @@
 const jwt = require("jsonwebtoken");
-const User = require("../Model/user.model");
 const bcrypt = require("bcrypt");
+const User = require("../Model/user.model");
 
-// Create User (เหมือนเดิม)
-exports.createrUser = async (req, res) => {
+// Register User
+exports.createUser = async (req, res) => {
   try {
-    // เข้ารหัสรหัสผ่าน
     if (req.body.password) {
       req.body.password = await bcrypt.hash(req.body.password, 10);
     }
-
-    // สร้าง User ใหม่
     const user = await User.create(req.body);
-
-    // ✅ สร้าง JWT Token ให้ User ทันทีหลังจากสมัครสมาชิก
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" } // Token ใช้ได้ 1 วัน
+      { expiresIn: "1d" }
     );
-
-    res.status(200).json({
-      success: true,
-      message: "Register successful",
-      token, // ✅ ส่ง Token กลับไปให้ Frontend ใช้งาน
-    });
+    res
+      .status(200)
+      .json({ success: true, message: "Register successful", token });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Login User (เพิ่ม JWT)
+// Login User
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // ตรวจสอบว่า email และ password ถูกส่งมา
     if (!email || !password) {
       return res
         .status(400)
         .json({ success: false, message: "Email and password are required" });
     }
-
-    // ค้นหา User ตาม email
     const user = await User.findOne({ where: { email } });
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res
         .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+    res.status(200).json({ success: true, message: "Login successful", token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get Me
+
+exports.getMe = async (req, res) => {
+  try {
+    // ตรวจสอบว่ามี user หรือไม่
+    if (!req.user) {
+      console.error("❌ Error: req.user is undefined");
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    console.log("🔍 Fetching user with ID:", req.user.id); // Debug Log
+
+    const user = await User.findByPk(req.user.id, {
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phoneNumber",
+        "nationalId",
+        "birhDate",
+        "houseNumber",
+        "village",
+        "province",
+        "district",
+        "subDistrict",
+        "postalCode",
+        "role",
+      ],
+    });
+
+    // ตรวจสอบว่าพบผู้ใช้หรือไม่
+    if (!user) {
+      console.error("❌ Error: User not found for ID", req.user.id);
+      return res
+        .status(404)
         .json({ success: false, message: "User not found" });
     }
 
-    // ตรวจสอบความถูกต้องของรหัสผ่าน
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid password" });
-    }
-
-    // สร้าง JWT Token
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d", // Token ใช้ได้ 1 วัน
-      }
-    );
-
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      token, // ส่ง token กลับไปให้ Frontend ใช้งาน
-    });
+    console.log("✅ User found:", user.toJSON()); // Debug Log
+    res.status(200).json({ success: true, data: user });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("❌ Server error in getMe:", error.message); // Debug Log
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };

@@ -4,7 +4,8 @@ import NavBar from "./components/NavBar";
 import JobPage from "./pages/๋JopPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import ImageSide from "./components/ImageSide";
+import HomeMain from "./pages/HomeMain";
+import Profile from "./pages/Profile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,12 +34,16 @@ function App() {
           element={!isLoggedIn ? <RegisterPage /> : <Navigate to="/main" />}
         />
         <Route
+          path="/main" // เพิ่มเส้นทางใหม่
+          element={isLoggedIn ? <HomeMain /> : <Navigate to="/login" />}
+        />
+        <Route
           path="/jobs"
           element={isLoggedIn ? <JobPage /> : <Navigate to="/login" />}
         />
         <Route
-          path="/main" // เพิ่มเส้นทางใหม่
-          element={isLoggedIn ? <ImageSide /> : <Navigate to="/login" />}
+          path="/profile"
+          element={isLoggedIn ? <Profile /> : <Navigate to="/login" />}
         />
       </Routes>
     </>

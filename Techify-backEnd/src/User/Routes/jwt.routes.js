@@ -1,9 +1,15 @@
 const express = require("express");
-const { createrUser, loginUser } = require("../Controller/user.jwt.controller");
+const {
+  createUser,
+  loginUser,
+  getMe,
+} = require("../Controller/user.jwt.controller");
+const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/auth/Register", createrUser);
+router.post("/auth/Register", createUser);
 router.post("/auth/login", loginUser);
+router.get("/me", authenticateToken, getMe);
 
 module.exports = router;

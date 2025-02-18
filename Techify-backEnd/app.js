@@ -19,7 +19,7 @@ const auth = require("./src/Test/Router/auth");
 const Job = require("./src/Jop/Routes/job.routes");
 const User = require("./src/User/Routes/user.routes");
 const JwtAuth = require("./src/User/Routes/jwt.routes");
-
+const admin = require("./src/User/Routes/admin.routes");
 // Middleware
 app.use(morgan("dev"));
 app.use(cors());
@@ -33,7 +33,10 @@ app.use("/api", auth);
 app.use("/api", Job);
 app.use("/api", User);
 
-//JwtAuth
+//JwtAuthUser
 app.use("/api", JwtAuth);
+
+//JwtAuthAdmin
+app.use("/api", admin);
 
 module.exports = app;

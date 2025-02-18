@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { deleteJob } from "../api/jobApi"; // นำเข้า API service
+import { deleteJob } from "../api/jobApi";
 
 export default function TableList({ handleOpen, tableData, setTableData }) {
   const [error, setError] = useState(null);
@@ -18,24 +18,24 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
   };
 
   return (
-    <>
-      {error && <div className="text-red-500">{error}</div>}
+    <div className="p-4">
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
       {/* ปุ่มประกาศงาน */}
       <div className="flex justify-start mb-4">
         <button
-          onClick={() => handleOpen("add")} // เปิด Modal ในโหมด "add"
+          onClick={() => handleOpen("add")}
           className="btn btn-primary rounded-lg shadow-md px-6 py-2"
         >
           ประกาศงาน
         </button>
       </div>
 
-      <div className="overflow-x-auto mt-10">
-        <table className="table">
+      <div className="overflow-x-auto mt-4">
+        <table className="table table-zebra w-full">
           <thead>
             <tr>
-              <th></th>
+              <th>#</th>
               <th>งาน</th>
               <th>รายละเอียด</th>
               <th>ที่อยู่</th>
@@ -45,19 +45,17 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
             </tr>
           </thead>
 
-          <tbody className="hover">
-            {tableData.map((job) => (
-              <tr key={job.id}>
-                <th>{job.id}</th>
+          <tbody>
+            {tableData.map((job, index) => (
+              <tr key={job.id} className="hover:bg-gray-100">
+                <th>{index + 1}</th>
                 <td>{job.JobName}</td>
                 <td>{job.Description}</td>
                 <td>{job.Location}</td>
-                <td>{job.IsActive}</td>
-
                 <td>
                   <button
-                    className={`btn rounded-full w-20 ${
-                      job.IsActive ? "btn-primary" : "btn-outline-primary"
+                    className={`btn btn-sm rounded-full w-20 ${
+                      job.IsActive ? "btn-primary" : "btn-outline"
                     }`}
                   >
                     {job.IsActive ? "เปิด" : "ปิด"}
@@ -66,17 +64,17 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
                 <td>
                   <button
                     onClick={() => handleOpen("edit", job)}
-                    className="btn btn-secondary"
+                    className="btn btn-secondary btn-sm"
                   >
-                    Update
+                    แก้ไข
                   </button>
                 </td>
                 <td>
                   <button
                     onClick={() => handleDelete(job.id)}
-                    className="btn btn-accent"
+                    className="btn btn-error btn-sm"
                   >
-                    Delete
+                    ลบ
                   </button>
                 </td>
               </tr>
@@ -84,6 +82,6 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
