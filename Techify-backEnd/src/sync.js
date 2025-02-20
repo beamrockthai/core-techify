@@ -1,7 +1,7 @@
 const sequelize = require("./Config/db");
 const Job = require("../src/Jop/Model/job.model"); // Import Model
 const User = require("../src/User/Model/user.model"); // Import Model
-
+const Employee = require("./EmployeeRe/Model/Employee.model");
 // สร้างตาราง
 (async () => {
   try {

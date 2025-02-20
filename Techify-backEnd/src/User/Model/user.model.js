@@ -2,33 +2,39 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../Config/db");
 
 const User = sequelize.define("User", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+
   firstName: {
     type: DataTypes.STRING,
-    allownull: false, // ไม่ให้มีค่าว่าง
+    allowNull: false, // ไม่ให้มีค่าว่าง
   },
 
   lastName: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   email: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   password: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   phoneNumber: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
   nationalId: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   birhDate: {
@@ -41,43 +47,38 @@ const User = sequelize.define("User", {
 
   houseNumber: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   village: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   province: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   district: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   subDistrict: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
 
   postalCode: {
     type: DataTypes.INTEGER,
-    allownull: false,
+    allowNull: false,
   },
 
   role: {
     type: DataTypes.ENUM("user", "admin"), // กำหนด Role ของผู้ใช้
     allowNull: false,
     defaultValue: "user",
-  },
-
-  body: {
-    type: DataTypes.JSON, // เพิ่ม เพราะว่า ถ้าฟิวที่ข้อมูลไม่เเน่นอน ให้ใช้ JSON
-    allowNull: true, // สามารถเว้นว่างได้
   },
 });
 module.exports = User;

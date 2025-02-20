@@ -45,7 +45,7 @@ export default function NavBar({ isLoggedIn }) {
                 </Link>
               </li>
               <li>
-                <Link to="/apply" className="hover:text-purple-600">
+                <Link to="/registerJob" className="hover:text-purple-600">
                   สมัครสอบ
                 </Link>
               </li>
@@ -114,7 +114,7 @@ export default function NavBar({ isLoggedIn }) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/apply" className="hover:text-purple-600">
+                  <Link to="/registerJob" className="hover:text-purple-600">
                     สมัครสอบ
                   </Link>
                 </li>

@@ -2,21 +2,27 @@ const { DataTypes } = require("sequelize"); // ใช้ในการกํา
 const sequelize = require("../../Config/db"); // เรียกใช้งานฐานข้อมูล
 
 const Job = sequelize.define("Job", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+
   JobName: {
     type: DataTypes.STRING, // กำหนดชนิดของฟิว
-    allownull: false, // ไม่ให้มีค่าว่าง
+    allowNull: false, // ไม่ให้มีค่าว่าง
   },
   Description: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
   Location: {
     type: DataTypes.STRING,
-    allownull: false,
+    allowNull: false,
   },
   IsActive: {
     type: DataTypes.BOOLEAN,
-    allownull: false,
+    allowNull: false,
   },
 });
 

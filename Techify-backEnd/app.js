@@ -19,7 +19,9 @@ const auth = require("./src/Test/Router/auth");
 const Job = require("./src/Jop/Routes/job.routes");
 const User = require("./src/User/Routes/user.routes");
 const JwtAuth = require("./src/User/Routes/jwt.routes");
-const admin = require("./src/User/Routes/admin.routes");
+const Admin = require("./src/User/Routes/admin.routes");
+const EmployeeRoutes = require("./src/EmployeeRe/Routes/Employee.routes");
+
 // Middleware
 app.use(morgan("dev"));
 app.use(cors());
@@ -37,6 +39,9 @@ app.use("/api", User);
 app.use("/api", JwtAuth);
 
 //JwtAuthAdmin
-app.use("/api", admin);
+app.use("/api", Admin);
+
+//RegisterJob
+app.use("/api/employees", EmployeeRoutes);
 
 module.exports = app;
