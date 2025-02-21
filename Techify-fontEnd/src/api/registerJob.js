@@ -11,12 +11,21 @@ export const registerJob = async (formData) => {
     }
 
     // ✅ ตรวจสอบว่าเส้นทาง `/app` ถูกต้อง
-    const response = await axios.post(`${API_URL}/app`, formData, {
+    // const response = await axios.post(`${API_URL}/app`, formData, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
+
+    // ✅ ตรวจสอบว่าเส้นทาง `/app` ถูกต้อง
+    const response = await axios.get(`${API_URL}/getJop`, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("test", response);
 
     return response.data;
   } catch (error) {

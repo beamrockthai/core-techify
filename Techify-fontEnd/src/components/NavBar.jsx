@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function NavBar({ isLoggedIn }) {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -13,142 +13,131 @@ export default function NavBar({ isLoggedIn }) {
   };
 
   return (
-    <div className="bg-base-100 shadow-lg">
-      <div className="navbar bg-white px-4 lg:px-8 py-2">
-        {/* Logo Section */}
-        <div className="navbar-start">
-          <Link to="/" className="flex items-center gap-4">
-            <img src={Logo} alt="Logo" className="h-20 w-50 rounded-full" />
-            <div>
-              <p className="font-bold text-base">
-                องค์การบริหารส่วนจังหวัดนนทบุรี
-              </p>
-              <p className="text-xs text-gray-500">
-                Nonthaburi Provincial Administrative Organization
-              </p>
-            </div>
-          </Link>
-        </div>
-
-        {/* Desktop Menu */}
-        <div className="navbar-end hidden lg:flex w-full justify-end gap-4">
-          {isLoggedIn ? (
-            <ul className="menu menu-horizontal px-1 gap-4 text-sm">
-              <li>
-                <Link to="/main" className="hover:text-purple-600">
-                  หน้าหลัก
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" className="hover:text-purple-600">
-                  ข้อมูลส่วนตัว
-                </Link>
-              </li>
-              <li>
-                <Link to="/registerJob" className="hover:text-purple-600">
-                  สมัครสอบ
-                </Link>
-              </li>
-              <li>
-                <Link to="/history" className="hover:text-purple-600">
-                  ประวัติการสมัคร
-                </Link>
-              </li>
-              <li>
-                <Link to="/jobs" className="hover:text-purple-600">
-                  ประกาศงาน
-                </Link>
-              </li>
-              <li>
-                <button
-                  className="btn btn-outline btn-primary text-sm"
-                  onClick={handleLogout}
-                >
-                  ออกจากระบบ
-                </button>
-              </li>
-            </ul>
-          ) : (
-            <p className="text-sm text-purple-600">กรุณาล็อกอิน</p>
-          )}
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="navbar-end lg:hidden">
-          <button
-            className="btn btn-ghost"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
+    <>
+      {/* Navbar */}
+      <div className="bg-base-100 shadow-lg w-full fixed top-0 left-0 z-50">
+        <div className="navbar bg-white px-4 lg:px-8 py-3 w-full max-w-screen-xl mx-auto flex justify-between items-center">
+          {/* Logo Section */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="h-20 w-50 md:h-16 md:w-16 rounded-full"
               />
-            </svg>
-          </button>
-        </div>
-      </div>
+              <div className="hidden sm:block">
+                <p className="font-bold text-base md:text-lg">
+                  องค์การบริหารส่วนจังหวัดนนทบุรี
+                </p>
+                <p className="text-xs text-gray-500">
+                  Nonthaburi Provincial Administrative Organization
+                </p>
+              </div>
+            </Link>
+          </div>
 
-      {/* Mobile Menu Items */}
-      {isMenuOpen && (
-        <div className="bg-white shadow-lg lg:hidden">
-          <ul className="menu menu-vertical p-4 text-sm">
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center gap-6">
             {isLoggedIn ? (
-              <>
+              <ul className="menu menu-horizontal px-1 gap-4 text-sm">
                 <li>
                   <Link to="/main" className="hover:text-purple-600">
-                    หน้าหลัก
+                    🏠 หน้าหลัก
                   </Link>
                 </li>
                 <li>
                   <Link to="/profile" className="hover:text-purple-600">
-                    ข้อมูลส่วนตัว
+                    👤 ข้อมูลส่วนตัว
                   </Link>
                 </li>
                 <li>
                   <Link to="/registerJob" className="hover:text-purple-600">
-                    สมัครสอบ
+                    📝 สมัครสอบ
                   </Link>
                 </li>
                 <li>
                   <Link to="/history" className="hover:text-purple-600">
-                    ประวัติการสมัคร
+                    📜 ประวัติการสมัคร
                   </Link>
                 </li>
                 <li>
                   <Link to="/jobs" className="hover:text-purple-600">
-                    ประกาศงาน
+                    📢 ประกาศงาน
                   </Link>
                 </li>
-                <li>
-                  <button
-                    className="btn btn-outline btn-primary text-sm"
-                    onClick={handleLogout}
-                  >
-                    ออกจากระบบ
-                  </button>
-                </li>
-              </>
+              </ul>
             ) : (
-              <li>
-                <p className="text-sm text-gray-500 text-center">
-                  กรุณาล็อกอิน
-                </p>
-              </li>
+              <p className="text-sm text-purple-600">กรุณาล็อกอิน</p>
             )}
-          </ul>
-        </div>
-      )}
+            {isLoggedIn && (
+              <button
+                className="btn btn-outline btn-primary text-sm ml-4"
+                onClick={handleLogout}
+              >
+                🚪 ออกจากระบบ
+              </button>
+            )}
+          </div>
 
-      <div className="h-1 bg-purple-600"></div>
-    </div>
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
+            <label htmlFor="menu-drawer" className="btn btn-ghost text-2xl">
+              ☰
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Drawer (DaisyUI) */}
+      <input type="checkbox" id="menu-drawer" className="drawer-toggle" />
+      <div className="drawer-side z-50">
+        <label htmlFor="menu-drawer" className="drawer-overlay"></label>
+        <ul className="menu p-4 w-64 bg-white shadow-lg">
+          {/* ปิดเมนู */}
+          <li className="self-end">
+            <label htmlFor="menu-drawer" className="text-2xl cursor-pointer">
+              ✖
+            </label>
+          </li>
+
+          {isLoggedIn ? (
+            <>
+              <li>
+                <Link to="/main">🏠 หน้าหลัก</Link>
+              </li>
+              <li>
+                <Link to="/profile">👤 ข้อมูลส่วนตัว</Link>
+              </li>
+              <li>
+                <Link to="/registerJob">📝 สมัครสอบ</Link>
+              </li>
+              <li>
+                <Link to="/history">📜 ประวัติการสมัคร</Link>
+              </li>
+              <li>
+                <Link to="/jobs">📢 ประกาศงาน</Link>
+              </li>
+              <li>
+                <button
+                  className="btn btn-outline btn-primary w-full"
+                  onClick={handleLogout}
+                >
+                  🚪 ออกจากระบบ
+                </button>
+              </li>
+            </>
+          ) : (
+            <li>
+              <p className="text-lg text-center mt-6 text-gray-900">
+                กรุณาล็อกอิน
+              </p>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      {/* แก้ปัญหา Navbar ทับเนื้อหา */}
+      <main className="pt-[72px]">{/* เนื้อหาทั้งหมดของเว็บ */}</main>
+    </>
   );
 }

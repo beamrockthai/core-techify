@@ -10,6 +10,7 @@ const express = require("express");
 const morgan = require("morgan"); //ไว้ใช้สําหรับการ log ข้อมูล ใน console
 const cors = require("cors");
 const bodyParser = require("body-parser"); //ไว้ใช้สําหรับส่ง body ให้หน้าบ้าน
+const session = require("express-session");
 
 const app = express(); //เรียกใช้ express
 
@@ -22,10 +23,25 @@ const JwtAuth = require("./src/User/Routes/jwt.routes");
 const Admin = require("./src/User/Routes/admin.routes");
 const EmployeeRoutes = require("./src/EmployeeRe/Routes/Employee.routes");
 
+// Import LINE Authentication
+const passport = require("./src/Config/passport");
+const authRoutes = require("./src/User/Routes/jwt.routes"); // Import LINE Auth Routes
+
 // Middleware
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
+
+// ใช้ express-session สำหรับ OAuth
+app.use(
+  session({
+    secret: process.env.JWT_SECRET, // ใช้ secret key เดียวกับ JWT
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 //this is route test เอาไว้ดึง endpoint ที่สร้างขึ้นมาใหม่ จาก router
 app.use("/api", test);
@@ -43,5 +59,8 @@ app.use("/api", Admin);
 
 //RegisterJob
 app.use("/api/employees", EmployeeRoutes);
+
+// LINE Login Routes
+app.use(authRoutes);
 
 module.exports = app;

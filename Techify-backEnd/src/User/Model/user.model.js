@@ -10,36 +10,36 @@ const User = sequelize.define("User", {
 
   firstName: {
     type: DataTypes.STRING,
-    allowNull: false, // ไม่ให้มีค่าว่าง
+    allowNull: true, // ไม่ให้มีค่าว่าง
   },
 
   lastName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   phoneNumber: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   nationalId: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   birhDate: {
     type: DataTypes.DATEONLY,
-    allowNull: false,
+    allowNull: true,
     validate: {
       isDate: true,
     },
@@ -47,33 +47,35 @@ const User = sequelize.define("User", {
 
   houseNumber: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   village: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   province: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   district: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   subDistrict: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   postalCode: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
+
+  lineId: { type: DataTypes.STRING, unique: true, allowNull: true },
 
   role: {
     type: DataTypes.ENUM("user", "admin"), // กำหนด Role ของผู้ใช้

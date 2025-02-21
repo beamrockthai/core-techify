@@ -1,6 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/authApi";
+import { initiateLineLogin } from "../api/initiateLineLogin ";
+import Banner from "../components/Banner";
+
+// ✅ 1. เพิ่มหลายรูปไว้ใน Array
+import not1 from "../assets/not.jpg";
+import not2 from "../assets/not2.jpg";
+import not3 from "../assets/not3.jpg";
+import not4 from "../assets/not4.jpg";
+import not5 from "../assets/not5.jpg";
+
+const backgroundImages = [not1, not2, not3, not4, not5];
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -8,138 +19,158 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [popupMessage, setPopupMessage] = useState(""); // ข้อความ Popup
-  const [isErrorPopup, setIsErrorPopup] = useState(false); // แยก Error Popup
-  const [shake, setShake] = useState(false); // ✅ เอฟเฟกต์สั่น
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // ✅ 2. เปลี่ยนรูปทุก 5 วินาที
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % backgroundImages.length
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);
     setError("");
-    setPopupMessage("กำลังเข้าสู่ระบบ...");
-    setIsErrorPopup(false);
 
-    try {
-      const userData = { email, password };
-      console.log("🔹 ส่งข้อมูลไปที่ Backend:", userData);
-
-      const response = await login(userData);
-      console.log("✅ Login successful:", response);
-
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        console.log("🔑 Token saved:", response.token);
-
-        setTimeout(() => {
-          setPopupMessage("");
-          window.location.reload();
-        }, 500);
-      } else {
-        setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-        setPopupMessage("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-        setIsErrorPopup(true);
-        setShake(true); // ✅ สั่น Popup
+    setTimeout(async () => {
+      try {
+        const response = await login({ email, password });
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+          navigate("/main");
+        } else {
+          setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+        }
+      } catch (err) {
+        setError("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("❌ Login failed:", err);
-      setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      setPopupMessage("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      setIsErrorPopup(true);
-      setShake(true); // ✅ สั่น Popup
-    } finally {
-      setLoading(false);
-    }
+    }, 1500);
+  };
+
+  const handleLineLogin = () => {
+    initiateLineLogin();
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="card w-full max-w-sm bg-white shadow-lg p-8 rounded-lg border border-gray-200">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          เข้าสู่ระบบ
-        </h2>
+    <div className="min-h-screen flex flex-col">
+      {/* ✅ ส่วนหลักของหน้า Login */}
+      <div className="flex-grow flex flex-col md:flex-row items-center justify-center bg-gray-100 relative">
+        {/* ✅ Background ที่เปลี่ยนและเลื่อนอัตโนมัติ */}
+        <div
+          className="absolute inset-0 bg-no-repeat bg-cover bg-center opacity-80 animate-bgScroll transition-all duration-1000 ease-in-out"
+          style={{
+            backgroundImage: `url(${backgroundImages[currentImageIndex]})`,
+          }}
+        ></div>
 
-        {/* แสดงข้อความ Error */}
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <div className="form-control mb-4">
-          <label className="label">
-            <span className="label-text text-gray-700 font-medium">อีเมล</span>
-          </label>
-          <input
-            type="email"
-            placeholder="กรุณากรอกอีเมล"
-            className="input input-bordered w-full border-gray-300"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="form-control mb-6">
-          <label className="label">
-            <span className="label-text text-gray-700 font-medium">
-              รหัสผ่าน
-            </span>
-          </label>
-          <input
-            type="password"
-            placeholder="กรอกรหัสผ่าน"
-            className="input input-bordered w-full border-gray-300"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button
-          className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`}
-          onClick={handleLogin}
-          disabled={loading}
-        >
-          {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
-        </button>
-
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-700">
-            ยังไม่มีบัญชีผู้ใช้?{" "}
-            <a href="/register" className="text-primary underline">
-              ลงทะเบียน
-            </a>
+        {/* ✅ ส่วนข้อความต้อนรับ */}
+        <div className="hidden md:flex flex-col text-black drop-shadow-lg w-2/5 text-left z-10 p-10 bg-white/50 backdrop-blur-md rounded-lg">
+          <h1 className="text-4xl font-bold mb-4 leading-tight">
+            ยินดีต้อนรับสู่อนาคตใหม่ของคุณ! 🚀
+          </h1>
+          <p className="text-lg opacity-90">
+            ค้นพบโอกาสที่ใช่ สร้างเส้นทางอาชีพในฝันของคุณกับบริษัทชั้นนำ
+            สมัครง่าย ได้งานไว!
           </p>
+        </div>
+
+        {/* ✅ ฟอร์มล็อกอิน */}
+        <div className="w-full md:w-2/5 flex justify-center relative z-10">
+          <div className="bg-white shadow-lg border border-gray-200 p-8 rounded-lg w-full max-w-md">
+            <h3 className="text-2xl font-semibold text-gray-800 text-center">
+              เข้าสู่ระบบ
+            </h3>
+            <p className="text-gray-500 text-center mb-4">
+              กรุณาลงชื่อเข้าใช้บัญชีของคุณ
+            </p>
+
+            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+            <div className="space-y-4">
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Email</span>
+                </div>
+                <input
+                  type="email"
+                  placeholder="mail@gmail.com"
+                  className="input input-bordered w-full"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </label>
+
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Password</span>
+                </div>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  className="input input-bordered w-full"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+
+              <button
+                className={`btn w-full ${
+                  loading
+                    ? "btn-disabled"
+                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                }`}
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+              </button>
+
+              {/* ปุ่มล็อกอินผ่าน LINE */}
+              <button
+                className="btn w-full btn-outline flex items-center justify-center"
+                onClick={handleLineLogin}
+              >
+                <img
+                  src="/src/assets/LINE_Brand_icon.png"
+                  alt="LINE Logo"
+                  className="w-6 h-6 mr-2"
+                />
+                เข้าสู่ระบบด้วย LINE
+              </button>
+            </div>
+
+            <p className="text-center text-sm text-gray-700 mt-4">
+              คุณยังไม่มีบัญชีใช่ไหม?{" "}
+              <a href="/register" className="text-purple-500 hover:underline">
+                สมัครสมาชิก
+              </a>
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Popup แจ้งเตือน */}
-      {popupMessage && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 transition-opacity">
-          <div
-            className={`bg-white p-6 rounded-lg shadow-lg text-center relative max-w-xs sm:max-w-sm animate-fade-in ${
-              shake ? "animate-shake" : ""
-            }`}
-          >
-            {isErrorPopup ? (
-              <>
-                <button
-                  className="absolute top-2 right-2 btn btn-circle btn-sm btn-ghost text-gray-500 hover:text-gray-800"
-                  onClick={() => setPopupMessage("")}
-                >
-                  ✖
-                </button>
-                <div className="flex flex-col items-center">
-                  <span className="text-red-500 text-3xl">⚠️</span>
-                  <p className="text-lg font-semibold text-red-600 mt-2">
-                    {popupMessage}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col items-center">
-                <span className="loading loading-spinner loading-lg text-primary mb-2"></span>
-                <p className="text-lg font-semibold text-gray-800">
-                  {popupMessage}
-                </p>
-              </div>
-            )}
+      {/* ✅ Loading Spinner เมื่อกดล็อกอิน */}
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center animate-fade">
+            <div className="loading loading-spinner loading-lg text-purple-600"></div>
+            <p className="text-gray-800 mt-4 text-lg font-semibold animate-pulse">
+              กำลังเข้าสู่ระบบ...
+            </p>
           </div>
         </div>
       )}
+
+      {/* ✅ Banner อยู่ล่างสุด */}
+      <div className="mt-auto">
+        <Banner />
+      </div>
     </div>
   );
 };

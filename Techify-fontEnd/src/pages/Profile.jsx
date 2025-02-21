@@ -9,8 +9,8 @@ export default function Profile() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const data = await getUserProfile();
-        setUser(data.data);
+        const response = await getUserProfile();
+        setUser(response.data || {}); // 🔹 ป้องกัน `user` เป็น `null`
       } catch (err) {
         setError(err.message);
       } finally {
@@ -25,11 +25,12 @@ export default function Profile() {
       <p className="text-center text-lg text-gray-700">กำลังโหลดข้อมูล...</p>
     );
   if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (!user)
+    return <p className="text-center text-gray-500">ไม่มีข้อมูลผู้ใช้</p>;
 
   return (
     <div className="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen flex items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6 md:p-8">
-        {/* หัวข้อ */}
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">
           ข้อมูลส่วนตัว
         </h2>
@@ -37,10 +38,8 @@ export default function Profile() {
           กรุณาตรวจสอบ ชื่อ นามสกุล ให้ตรงตามบัตรประชาชน
         </p>
 
-        {/* เส้นแบ่ง */}
         <div className="border-t border-purple-500 mb-4"></div>
 
-        {/* 🔹 ข้อมูลส่วนตัว */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-control">
             <label className="label font-semibold text-gray-600">
@@ -48,7 +47,7 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={`${user.firstName} ${user.lastName}`}
+              value={`${user.firstName || ""} ${user.lastName || ""}`} // 🔹 แก้ไขให้ปลอดภัย
               readOnly
               className="input input-bordered w-full"
             />
@@ -60,7 +59,7 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={`${user.nationalId.slice()}`}
+              value={user.nationalId ? user.nationalId.slice() : ""} // 🔹 เช็ค `null` ก่อนใช้ `.slice()`
               readOnly
               className="input input-bordered w-full"
             />
@@ -72,7 +71,7 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={user.birhDate}
+              value={user.birthDate || "ไม่ระบุ"} // 🔹 ป้องกันค่า `undefined`
               readOnly
               className="input input-bordered w-full"
             />
@@ -82,7 +81,7 @@ export default function Profile() {
             <label className="label font-semibold text-gray-600">E-mail</label>
             <input
               type="email"
-              value={user.email}
+              value={user.email || "ไม่ระบุ"}
               readOnly
               className="input input-bordered w-full"
             />
@@ -94,17 +93,15 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={user.phoneNumber}
+              value={user.phoneNumber || "ไม่ระบุ"}
               readOnly
               className="input input-bordered w-full"
             />
           </div>
         </div>
 
-        {/* เส้นแบ่ง */}
         <div className="border-t border-purple-500 mt-6"></div>
 
-        {/* 🔹 ส่วนที่อยู่ */}
         <h3 className="text-lg font-semibold text-gray-800 mt-4">ที่อยู่</h3>
 
         <div className="grid grid-cols-1 gap-4 mt-2">
@@ -114,7 +111,7 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={user.houseNumber}
+              value={user.houseNumber || "ไม่ระบุ"}
               readOnly
               className="input input-bordered w-full"
             />
@@ -127,7 +124,7 @@ export default function Profile() {
               </label>
               <input
                 type="text"
-                value={user.village}
+                value={user.village || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
@@ -138,7 +135,7 @@ export default function Profile() {
               </label>
               <input
                 type="text"
-                value={user.district}
+                value={user.district || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
@@ -147,7 +144,7 @@ export default function Profile() {
               <label className="label font-semibold text-gray-600">ตำบล</label>
               <input
                 type="text"
-                value={user.subDistrict}
+                value={user.subDistrict || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
@@ -156,7 +153,7 @@ export default function Profile() {
               <label className="label font-semibold text-gray-600">อำเภอ</label>
               <input
                 type="text"
-                value={user.province}
+                value={user.district || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
@@ -170,7 +167,7 @@ export default function Profile() {
               </label>
               <input
                 type="text"
-                value={user.province}
+                value={user.province || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
@@ -181,16 +178,13 @@ export default function Profile() {
               </label>
               <input
                 type="text"
-                value={user.postalCode}
+                value={user.postalCode || "ไม่ระบุ"}
                 readOnly
                 className="input input-bordered w-full"
               />
             </div>
           </div>
         </div>
-
-        {/* ปุ่มบันทึก */}
-        {/* <button className="btn btn-primary w-full mt-6">บันทึก</button> */}
       </div>
     </div>
   );

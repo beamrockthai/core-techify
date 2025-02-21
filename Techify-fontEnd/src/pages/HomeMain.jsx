@@ -1,64 +1,76 @@
 import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules"; // ใช้ Autoplay Module
 import { getJobs } from "../api/jobApi";
+import Banner from "../components/Banner";
+
 import "swiper/css";
+import "swiper/css/autoplay";
+import { registerJob } from "../api/registerJob";
+
+// ✅ นำเข้าภาพจากโฟลเดอร์ assets
+import image1 from "../assets/image1.jpg";
+import image2 from "../assets/image2.jpg";
+import image3 from "../assets/image3.jpg";
+import image4 from "../assets/image4.jpg";
+
+const images = [image1, image2, image3, image4];
 
 const ImageCarousel = () => {
   const [tableData, setTableData] = useState([]);
   const [error, setError] = useState(null);
 
-  const images = [
-    "/src/assets/image1.jpg",
-    "/src/assets/image2.jpg",
-    "/src/assets/image3.jpg",
-    "/src/assets/image4.jpg",
-  ];
-
   useEffect(() => {
-    const AllJobs = async () => {
+    registerJob();
+    const fetchJobs = async () => {
       try {
         const jobs = await getJobs();
-        setTableData(jobs); // อัปเดต state ของ tableData
+        setTableData(jobs);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         setError(error.message);
       }
     };
 
-    AllJobs();
+    fetchJobs();
   }, []);
 
   return (
     <div className="bg-white w-full flex flex-col items-center">
-      <Swiper
-        spaceBetween={10}
-        slidesPerView={1}
-        className="w-full max-w-10xl h-[500px] rounded-md overflow-hidden shadow-md"
-      >
-        {images.map((src, index) => (
-          <SwiperSlide key={index}>
-            <img
-              src={src}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {/* ✅ ใช้ DaisyUI + Swiper และทำให้เต็มจอ */}
+      <div className="carousel w-screen rounded-none shadow-xl overflow-hidden">
+        <Swiper
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          autoplay={{
+            delay: 3000, // หน่วงเวลา 3 วินาที
+            disableOnInteraction: false,
+          }}
+          speed={2000} // ✅ ปรับให้การเปลี่ยนภาพสมูทขึ้น
+          modules={[Autoplay]}
+          className="w-screen h-[600px]"
+        >
+          {images.map((src, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={src}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
-      {/* Button Section */}
-      <div className="w-full mt-6 flex justify-start">
-        <button className="btn btn-primary text-white px-6 py-2 text-lg rounded-lg shadow-lg ml-6">
+      {/* ✅ ปุ่ม ข่าวสารการเปิดรับสมัคร */}
+      <div className="w-full mt-6 flex justify-start px-6">
+        <button className="btn btn-primary text-white px-6 py-2 text-lg rounded-lg shadow-lg">
           ข่าวสารการเปิดรับสมัคร
         </button>
       </div>
 
-      {/*<div className="w-full mt-6 flex justify-start">
-        <button className="btn btn-primary text-white px-6 py-2 text-lg rounded-lg shadow-lg ml-6">
-          ตําเเหน่งงานที่เปิดรับ
-        </button>
-      </div>*/}
-
+      {/* ✅ รายการงานที่เปิดรับ */}
       <div className="w-full px-6">
         {error ? (
           <p className="text-red-500">เกิดข้อผิดพลาด: {error}</p>
@@ -101,6 +113,11 @@ const ImageCarousel = () => {
             )}
           </div>
         )}
+      </div>
+
+      {/* ✅ Banner อยู่ล่างสุด (เพิ่มระยะห่าง & ขยายขนาด) */}
+      <div className="mt-12 w-screen px-15 ">
+        <Banner />
       </div>
     </div>
   );
