@@ -13,7 +13,7 @@ const NavbarMain = ({ handleLogout }) => {
         {/* ✅ Logo */}
         <div className="inline-flex">
           <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-12 w-12 rounded-full" />
+            <img src={Logo} alt="Logo" className="h-20 w-15 rounded-full" />
           </Link>
         </div>
 
