@@ -1,13 +1,14 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import NavBar from "./components/NavBar";
-import JobPage from "../src/pages/๋JopPage";
+import NavbarLogin from "../src/components/NavBar"; // Navbar สำหรับหน้า Login/Register
+import NavbarMain from "../src/components/NavBarMain"; // Navbar สำหรับหน้าหลังจากล็อกอิน
+import JobPage from "./pages/๋JopPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomeMain from "./pages/HomeMain";
 import Profile from "./pages/Profile";
-import RegisterJob from "../src/pages/RegisterJopPage";
-import JobApplicationForm from "../src/pages/๋JopRegisterFrom";
+import RegisterJob from "./pages/RegisterJopPage";
+import JobApplicationForm from "./pages/๋JopRegisterFrom";
 import LoginSuccess from "./components/LoginSuccess";
 
 function App() {
@@ -20,19 +21,30 @@ function App() {
       setIsLoggedIn(!!token);
     };
 
-    checkAuth(); // ตรวจสอบตอนโหลดหน้า
-
-    // ✅ ตรวจสอบค่า token ทุกครั้งที่เปลี่ยน
+    checkAuth(); // ตรวจสอบสถานะตอนโหลดหน้า
     const interval = setInterval(checkAuth, 1000); // ตรวจสอบทุก 1 วินาที
-
     return () => clearInterval(interval);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
   return (
     <>
-      <NavBar isLoggedIn={isLoggedIn} />
+      {/* ✅ ใช้ NavbarLogin ในหน้า Login/Register */}
+      {/* ✅ ใช้ NavbarMain ในหน้าที่ล็อกอินแล้ว */}
+      {isLoggedIn ? (
+        <NavbarMain handleLogout={handleLogout} />
+      ) : (
+        <NavbarLogin />
+      )}
+
       <Routes>
         <Route path="/login-success" element={<LoginSuccess />} />
+
+        {/* ✅ เปลี่ยนเส้นทางตามสถานะล็อกอิน */}
         <Route
           path="/"
           element={
