@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import RegisterJob from "./pages/RegisterJopPage";
 import JobApplicationForm from "./pages/๋JopRegisterFrom";
 import LoginSuccess from "./components/LoginSuccess";
+import JobHistoryPage from "./pages/JobHistoryPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -85,6 +86,15 @@ function App() {
             isLoggedIn ? <RegisterJob /> : <Navigate to="/login" replace />
           }
         />
+
+        {/* ✅ เส้นทางหน้า "ประวัติการสมัครงาน" */}
+        <Route
+          path="/job-history"
+          element={
+            isLoggedIn ? <JobHistoryPage /> : <Navigate to="/login" replace />
+          }
+        />
+
         <Route
           path="/registerJobStep1/:jobId"
           element={

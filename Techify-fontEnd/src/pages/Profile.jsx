@@ -71,7 +71,7 @@ export default function Profile() {
             </label>
             <input
               type="text"
-              value={user.birthDate || "ไม่ระบุ"} // 🔹 ป้องกันค่า `undefined`
+              value={user.birhDate || "ไม่ระบุ"} // 🔹 ป้องกันค่า `undefined`
               readOnly
               className="input input-bordered w-full"
             />

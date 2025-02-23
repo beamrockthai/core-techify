@@ -9,24 +9,16 @@ const NavbarMain = ({ handleLogout }) => {
   return (
     <>
       {/* ✅ Navbar หลัก */}
-      <nav className="bg-white w-full flex justify-between items-center mx-auto px-8 h-20 shadow-md">
+      <nav className="bg-white w-full flex justify-between items-center mx-auto px-8 h-20 shadow-md border-b-4 border-purple-300">
         {/* ✅ Logo */}
         <div className="inline-flex">
           <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-20 w-15 rounded-full" />
+            <img src={Logo} alt="Logo" className="h-12 w-15 rounded-full" />
+            <p className="ml-2 text-lg font-bold hidden md:block">
+              องค์การบริหารส่วนจังหวัดนนทบุรี
+            </p>
           </Link>
         </div>
-
-        {/* ✅ Search Bar */}
-        {/* <div className="hidden sm:block flex-shrink flex-grow-0 justify-start px-2">
-          <div className="inline-block">
-            <div className="inline-flex items-center max-w-full">
-              <button className="flex items-center border rounded-full px-3 py-1 w-60">
-                <span className="text-gray-500">🔍 Start your search</span>
-              </button>
-            </div>
-          </div>
-        </div> */}
 
         {/* ✅ ปุ่มเมนู ☰ + Profile */}
         <div className="flex items-center space-x-4">
@@ -51,13 +43,6 @@ const NavbarMain = ({ handleLogout }) => {
                   transition={{ duration: 0.3 }}
                   className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50"
                 >
-                  {/* <button
-                    className="absolute top-2 right-2 text-lg"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    ✖
-                  </button> */}
-
                   <ul className="p-2 space-y-2 text-gray-700 text-sm">
                     <li>
                       <Link
@@ -88,7 +73,7 @@ const NavbarMain = ({ handleLogout }) => {
                     </li>
                     <li>
                       <Link
-                        to="/history"
+                        to="job-history"
                         className="block px-4 py-2 hover:bg-gray-100"
                         onClick={() => setMenuOpen(false)}
                       >

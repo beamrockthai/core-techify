@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import TableList from "../components/TableList";
 import ModalForm from "../components/Modalfrom";
+// import Banner from "../components/Banner";
 import { getJobs, addJob, updateJob } from "../api/jobApi";
 
 const JobPage = () => {
@@ -58,7 +59,7 @@ const JobPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center my-4">จัดการงาน</h1>
+      {/* <h1 className="text-2xl font-bold text-center my-4">จัดการงาน</h1> */}
       {loading && <p className="text-center text-gray-500">กำลังโหลด...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
       <TableList
@@ -73,6 +74,9 @@ const JobPage = () => {
         mode={modalMode}
         jobData={jobData}
       />
+      {/* <div className="mt-12 w-screen px-15">
+        <Banner />
+      </div> */}
     </div>
   );
 };

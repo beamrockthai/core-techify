@@ -22,7 +22,15 @@ router.post(
 );
 
 // ✅ ดูรายการสมัครของตัวเอง
-router.get("/getJop", authenticateToken, getRegisterJob);
+router.get(
+  "/getJop",
+  authenticateToken,
+  (req, res, next) => {
+    console.log("API Called:", req.path);
+    next();
+  },
+  getRegisterJob
+);
 
 // ✅ อัปเดตสถานะการสมัคร (Admin เท่านั้น)
 router.put("/update/:id", authenticateToken, updateApplicationStatus);

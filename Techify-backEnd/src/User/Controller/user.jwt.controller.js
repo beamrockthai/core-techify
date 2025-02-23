@@ -52,36 +52,69 @@ exports.loginUser = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
-    // ตรวจสอบว่ามี user หรือไม่
+    // ✅ ตรวจสอบว่ามี user หรือไม่
     if (!req.user) {
       console.error("❌ Error: req.user is undefined");
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    console.log("🔍 Fetching user with ID:", req.user.id); // Debug Log
+    console.log(
+      "🔍 Fetching user with ID:",
+      req.user.id,
+      "or Line ID:",
+      req.user.lineId
+    ); // Debug Log
 
-    const user = await User.findByPk(req.user.id, {
-      attributes: [
-        "id",
-        "firstName",
-        "lastName",
-        "email",
-        "phoneNumber",
-        "nationalId",
-        "birhDate",
-        "houseNumber",
-        "village",
-        "province",
-        "district",
-        "subDistrict",
-        "postalCode",
-        "role",
-      ],
-    });
+    let user;
 
-    // ตรวจสอบว่าพบผู้ใช้หรือไม่
+    if (req.user.id) {
+      // ✅ ค้นหาจาก `id` (สำหรับคนที่สมัครด้วย Email)
+      user = await User.findByPk(req.user.id, {
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "nationalId",
+          "birhDate",
+          "houseNumber",
+          "village",
+          "province",
+          "district",
+          "subDistrict",
+          "postalCode",
+          "role",
+          "lineId",
+        ],
+      });
+    } else if (req.user.lineId) {
+      // ✅ ค้นหาจาก `lineId` (สำหรับคนที่ล็อกอินด้วย LINE)
+      user = await User.findOne({
+        where: { lineId: req.user.lineId },
+        attributes: [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "phoneNumber",
+          "nationalId",
+          "birhDate",
+          "houseNumber",
+          "village",
+          "province",
+          "district",
+          "subDistrict",
+          "postalCode",
+          "role",
+          "lineId",
+        ],
+      });
+    }
+
+    // ❌ ถ้าไม่เจอ User
     if (!user) {
-      console.error("❌ Error: User not found for ID", req.user.id);
+      console.error("❌ Error: User not found");
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
