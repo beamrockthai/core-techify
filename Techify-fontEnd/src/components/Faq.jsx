@@ -9,35 +9,32 @@ const Faq = () => {
 
   const faqs = [
     {
-      question: "How can I pay for my appointment?",
+      question: "จะหาข้อมูลการรับสมัครงานของ อบจ.นนทบุรี ได้จากที่ไหน?",
       answer:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab nulla quod dignissimos vel non corrupti doloribus voluptatum eveniet.",
+        "คุณสามารถติดตามประกาศรับสมัครงานได้ที่เว็บไซต์ทางการของ อบจ.นนทบุรี ในส่วนของข่าวประชาสัมพันธ์",
     },
     {
-      question:
-        "Is the cost of the appointment covered by private health insurance?",
-      answer:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas eaque nobis, fugit odit omnis fugiat deleniti animi ab maxime cum laboriosam recusandae facere dolorum veniam quia pariatur obcaecati illo ducimus?",
+      question: "ขั้นตอนการสมัครงานผ่านเว็บไซต์มีอะไรบ้าง?",
+      answer: `ตรวจสอบประกาศรับสมัครงานที่สนใจ เเละ เตรียมเอกสารประกอบการสมัคร เช่น สำเนาบัตรประชาชน วุฒิการศึกษา และเอกสารอื่น ๆ ตามที่กำหนด`,
     },
     {
-      question: "Do I need a referral?",
+      question: "มีค่าธรรมเนียมในการสมัครงานหรือไม่?",
       answer:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab nulla quod dignissimos vel non corrupti doloribus voluptatum eveniet.",
+        "ข้อมูลเกี่ยวกับค่าธรรมเนียม (ถ้ามี) ระบุไว้ในประกาศรับสมัครงาน ควรตรวจสอบรายละเอียดในแต่ละประกาศ",
     },
     {
-      question: "What are your opening hours?",
+      question: "จะทราบผลการสมัครงานได้อย่างไร?",
       answer:
-        "Our opening hours are Monday to Friday, from 9 AM to 6 PM. On Saturdays, we are open from 10 AM to 4 PM.",
+        "อบจ.นนทบุรี จะประกาศรายชื่อผู้ผ่านคัดเลือกหรือสัมภาษณ์ผ่านเว็บไซต์ทางการขององค์กร",
     },
     {
-      question: "What can I expect at my first consultation?",
-      answer:
-        "During your first consultation, our specialists will assess your condition and discuss the best treatment options available.",
+      question: "หากมีข้อสงสัยเพิ่มเติม ควรติดต่อที่ไหน?",
+      answer: `สามารถติดต่อสอบถามข้อมูลเพิ่มเติมได้ที่สำนักงาน อบจ.นนทบุรี หรือหมายเลขโทรศัพท์ที่ระบุในประกาศรับสมัครงาน 📞เบอร์โทรศัพท์ : 02-589-0481-5`,
     },
   ];
 
   return (
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-gradient-to-b from-white via-amber-100 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container max-w-4xl px-6 py-10 mx-auto">
         <h1 className="text-2xl font-extrabold text-center text-gray-800 lg:text-3xl dark:text-white tracking-wide">
           FAQ

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion"; // ✅ ใช้ Framer Motion
-import Logo from "../assets/logo.webp";
+import Logo from "../assets/LogoNew.png";
 
 const NavbarMain = ({ handleLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,7 +13,11 @@ const NavbarMain = ({ handleLogout }) => {
         {/* ✅ Logo */}
         <div className="inline-flex">
           <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-12 w-15 rounded-full" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-32 w-32 rounded-full object-cover"
+            />
             <p className="ml-2 text-lg font-bold hidden md:block">
               องค์การบริหารส่วนจังหวัดนนทบุรี
             </p>
