@@ -30,7 +30,7 @@ const JobHistoryPage = () => {
   }, []);
 
   return (
-    <div className="grid min-h-screen grid-rows-[1fr_auto]">
+    <div className="grid min-h-screen grid-rows-[1fr_auto] font-sans bg-gray-100">
       {/* ส่วนเนื้อหาหลัก */}
       <div className="container mx-auto px-4 py-6">
         <TableHistory data={jobHistory} />

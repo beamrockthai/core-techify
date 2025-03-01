@@ -7,15 +7,17 @@ const {
 } = require("../../EmployeeRe/Controller/Employee.controller");
 
 const authenticateToken = require("../../User/middleware/authMiddleware");
-
+const uploadMiddleware = require("../../EmployeeRe/middleware/uploadMiddleware");
 const router = express.Router();
 
 // ✅ สมัครงาน (ต้องล็อกอิน)
 router.post(
-  "/app",
-  authenticateToken,
+  "/register",
+  authenticateToken, // ✅ ตรวจสอบ Token
+  uploadMiddleware, // ✅ อัปโหลดไฟล์
   (req, res, next) => {
-    console.log("✅ Route /app Called - Received request:", req.body);
+    console.log("✅ Route /register Called - Received request:", req.body);
+    console.log("✅ Received files:", req.files);
     next();
   },
   registerForJob

@@ -23,9 +23,15 @@ const JwtAuth = require("./src/User/Routes/jwt.routes");
 const Admin = require("./src/User/Routes/admin.routes");
 const EmployeeRoutes = require("./src/EmployeeRe/Routes/Employee.routes");
 
+const path = require("path");
+
 // Import LINE Authentication
 const passport = require("./src/Config/passport");
 const authRoutes = require("./src/User/Routes/jwt.routes"); // Import LINE Auth Routes
+
+// JSON Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Middleware
 app.use(morgan("dev"));
@@ -56,6 +62,8 @@ app.use("/api", JwtAuth);
 
 //JwtAuthAdmin
 app.use("/api", Admin);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //RegisterJob
 app.use("/api/employees", EmployeeRoutes);

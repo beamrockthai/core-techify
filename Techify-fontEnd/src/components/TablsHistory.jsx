@@ -12,21 +12,21 @@ const TableHistory = ({ data }) => {
   }
 
   return (
-    <div className="overflow-auto rounded-lg shadow-lg">
+    <div className="overflow-auto rounded-lg shadow-lg font-semibold">
       <table className="min-w-full border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-3 text-left">#</th>
-            <th className="px-4 py-3 text-left">ชื่องาน</th>
-            <th className="px-4 py-3 text-left">วันที่สมัคร</th>
-            <th className="px-4 py-3 text-left">สถานะ</th>
-            <th className="px-4 py-3 text-left">Download</th>
+            <th className="px-4 py-3 text-left font-semibold">#</th>
+            <th className="px-4 py-3 text-left font-semibold">ชื่องาน</th>
+            <th className="px-4 py-3 text-left font-semibold">วันที่สมัคร</th>
+            <th className="px-4 py-3 text-left font-semibold">สถานะ</th>
+            <th className="px-4 py-3 text-left font-semibold">Download</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
           {data.length === 0 ? (
             <tr>
-              <td colSpan="5" className="text-center py-4">
+              <td colSpan="5" className="text-center py-4 font-semibold">
                 ไม่มีประวัติการสมัคร
               </td>
             </tr>
@@ -62,7 +62,7 @@ const TableHistory = ({ data }) => {
                 <td className="px-4 py-3">
                   <button
                     onClick={() => generatePDF([job])} // ✅ ใช้งานฟังก์ชัน PDF
-                    className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition"
+                    className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition font-semibold"
                   >
                     Download
                   </button>

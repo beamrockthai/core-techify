@@ -3,22 +3,20 @@ import { getJobs } from "../api/jobApi";
 import Banner from "../components/Banner";
 
 const RegisterJob = () => {
-  const [tableData, setTableData] = useState(null); // ป้องกัน undefined
+  const [tableData, setTableData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await getJobs();
-        console.log("📌 API Response:", response); // Debug API Response
+        console.log("📌 API Response:", response);
 
-        if (Array.isArray(response)) {
-          setTableData(response); // ใช้ response ตรงๆ ถ้าเป็น Array
-        } else if (response?.data && Array.isArray(response.data)) {
-          setTableData(response.data); // ใช้ response.data ถ้ามี
-        } else {
-          setTableData([]); // ถ้ารูปแบบผิดให้เป็น []
-        }
+        const jobs = Array.isArray(response) ? response : response?.data || [];
+        setTableData(jobs);
+        setFilteredData(jobs); // เริ่มต้นให้ตรงกับข้อมูลทั้งหมด
       } catch (error) {
         console.error("❌ Error fetching jobs:", error);
         setError(error.message);
@@ -28,66 +26,107 @@ const RegisterJob = () => {
     fetchJobs();
   }, []);
 
+  // ฟังก์ชันสำหรับการค้นหา
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query === "") {
+      setFilteredData(tableData); // ถ้าพิมพ์ว่าง ให้คืนค่าข้อมูลทั้งหมด
+    } else {
+      setFilteredData(
+        tableData.filter((job) => job.JobName.toLowerCase().includes(query))
+      );
+    }
+  };
+
   return (
-    <div className="bg-gray-100 min-h-screen py-8 px-4 flex flex-col">
+    <div className="bg-gray-100 min-h-screen py-8 px-4 flex flex-col font-sans">
       <div className="container mx-auto">
+        {/* ✅ เพิ่มช่องค้นหางาน */}
+        <div className="mb-4 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-700">
+            📋 รายชื่องานทั้งหมด
+          </h2>
+          <input
+            type="text"
+            placeholder="🔍 ค้นหาชื่องาน..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         {error ? (
           <p className="text-red-500 text-center text-lg">{error}</p>
-        ) : tableData === null ? (
-          <p className="text-gray-500 text-center text-lg">
-            กำลังโหลดข้อมูล...
-          </p>
         ) : tableData.length === 0 ? (
           <p className="text-gray-500 text-center text-lg">ไม่พบข้อมูล</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="overflow-x-auto ">
+            <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden ">
               <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="px-4 py-2">#</th>
-                  <th className="px-4 py-2">ชื่องาน</th>
-                  <th className="px-4 py-2">รายละเอียด</th>
-                  <th className="px-4 py-2">ที่อยู่</th>
-                  <th className="px-4 py-2">สถานะ</th>
-                  <th className="px-4 py-2">สมัครงาน</th>
+                <tr className="bg-gray-200 text-gray-700 text-left">
+                  <th className="px-6 py-3 font-semibold">#</th>
+                  <th className="px-6 py-3 font-semibold">ชื่องาน</th>
+                  <th className="px-6 py-3 w-1/3 font-semibold">รายละเอียด</th>
+                  <th className="px-6 py-3 font-semibold">ที่อยู่</th>
+                  <th className="px-6 py-3 text-center font-semibold">สถานะ</th>
+                  <th className="px-6 py-3 text-center font-semibold">
+                    สมัครงาน
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((job, index) => {
-                  const isClosed = !job.IsActive;
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="text-center py-4 text-gray-500 font-semibold"
+                    >
+                      ❌ ไม่พบงานที่คุณค้นหา
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((job, index) => {
+                    const isClosed = !job.IsActive;
 
-                  return (
-                    <tr key={index} className="hover:bg-gray-100">
-                      <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2 font-semibold">{job.JobName}</td>
-                      <td className="px-4 py-2">{job.Description}</td>
-                      <td className="px-4 py-2">{job.Location}</td>
-                      <td className="px-4 py-2">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            isClosed
-                              ? "bg-red-500 text-white"
-                              : "bg-green-500 text-white"
-                          }`}
-                        >
-                          {isClosed ? "ปิดรับสมัคร" : "เปิดรับสมัคร"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">
-                        <button
-                          className={`w-full px-6 py-2 font-semibold text-white rounded-lg transition-all transform shadow-lg ${
-                            isClosed
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 hover:shadow-xl"
-                          }`}
-                          disabled={isClosed}
-                        >
-                          {isClosed ? "ปิดรับสมัคร" : "สมัครงาน"}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    return (
+                      <tr key={index} className="hover:bg-gray-100 border-b">
+                        <td className="px-6 py-3">{index + 1}</td>
+                        <td className="px-6 py-3 font-semibold">
+                          {job.JobName}
+                        </td>
+                        <td className="px-6 py-3 text-gray-600 whitespace-pre-line font-semibold">
+                          {job.Description}
+                        </td>
+                        <td className="px-6 py-3">{job.Location}</td>
+                        <td className="px-6 py-3 text-center">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              isClosed
+                                ? "bg-red-500 text-white"
+                                : "bg-green-500 text-white"
+                            }`}
+                          >
+                            {isClosed ? "ปิดรับสมัคร" : "เปิดรับสมัคร"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-3 text-center">
+                          <button
+                            className={`px-5 py-2 font-semibold text-white rounded-lg transition-all transform shadow-lg ${
+                              isClosed
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 hover:shadow-xl"
+                            }`}
+                            disabled={isClosed}
+                          >
+                            {isClosed ? "ปิดรับสมัคร" : "สมัครงาน"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
