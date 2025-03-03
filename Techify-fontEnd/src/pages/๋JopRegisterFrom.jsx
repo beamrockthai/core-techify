@@ -1,128 +1,143 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { registerJob } from "../api/registerJob";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; // ✅ ใช้ navigate
+import UploadBoxFrom from "../components/UploadBoxFrom";
+import InputFrom from "../components/InputFrom";
+import { registerJob } from "../api/registerJob"; // ✅ นำเข้า API
 
-const JobApplicationForm = () => {
+function RegisterFromPage() {
+  console.log("✅ RegisterFromPage rendering...");
   const navigate = useNavigate();
   const { jobId } = useParams();
 
-  const [formData, setFormData] = useState({
-    jobId: "",
+  // ✅ ตรวจสอบว่า jobId เป็น UUID จริง
+  if (!jobId || !/^[0-9a-fA-F-]{36}$/.test(jobId)) {
+    alert("❌ jobId ไม่ถูกต้อง หรือไม่ได้รับค่า");
+    return;
+  }
+
+  // ✅ State สำหรับข้อมูลส่วนตัวจาก InputFrom
+  const [personalData, setPersonalData] = useState({});
+  const handleInputChange = (newData) => {
+    setPersonalData((prevData) => ({ ...prevData, ...newData }));
+  };
+
+  // ✅ State สำหรับไฟล์อัปโหลด
+  const [uploadedFiles, setUploadedFiles] = useState({
     profileImage: null,
-    attachedFiles: null,
-    personalInfo: "",
-    educationHistory: "",
-    workHistory: "",
-    specialSkills: "",
+    idCardImage: null,
+    houseRegistrationImage: null,
+    degreeCertificateImage: null,
+    transcriptImage: null,
+    workCertificateImage: null,
+    medicalCertificateImage: null,
+    criminalRecordImage: null,
+    passportImage: null,
+    drivingLicenseImage: null,
+    attachedFiles: [],
   });
 
-  // ✅ ใช้ useEffect อัปเดต jobId เมื่อ URL เปลี่ยน
-  useEffect(() => {
-    if (jobId) {
-      setFormData((prevState) => ({
-        ...prevState,
-        jobId: jobId,
-      }));
-    }
-  }, [jobId]);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ✅ ฟังก์ชันจัดการไฟล์อัปโหลด
+  const handleFileSelect = (field, file) => {
+    setUploadedFiles((prev) => ({ ...prev, [field]: file }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+  // ✅ ฟังก์ชันตรวจสอบข้อมูลที่จำเป็น
+  const validateForm = () => {
+    return (
+      personalData.firstName &&
+      personalData.lastName &&
+      uploadedFiles.profileImage
+    );
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("📌 Checking jobId before sending:", formData.jobId);
-
-    if (!formData.jobId) {
-      console.error("❌ jobId is missing!");
+  // ✅ ฟังก์ชันส่งฟอร์มไปยัง API
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      alert("❌ กรุณากรอกข้อมูลให้ครบและอัปโหลดรูปถ่ายขนาด 1 นิ้ว");
       return;
     }
 
+    // ✅ Popup ยืนยันก่อนส่ง
+    const isConfirmed = window.confirm(
+      "📩 คุณต้องการยืนยันการสมัครงานหรือไม่?"
+    );
+    if (!isConfirmed) return;
+
+    const formData = new FormData();
+    formData.append("jobId", jobId);
+    formData.append("personalInfo", JSON.stringify(personalData));
+
+    // ✅ เพิ่มไฟล์เข้า FormData
+    Object.entries(uploadedFiles).forEach(([key, file]) => {
+      if (file?.file) formData.append(key, file.file);
+    });
+
     try {
-      console.log("📌 Sending data to API:", formData);
       const response = await registerJob(formData);
-      console.log("✅ API Response:", response);
-      navigate("/success");
+      console.log("✅ สมัครงานสำเร็จ:", response);
+
+      if (response.success) {
+        alert("🎉 สมัครงานสำเร็จ! กำลังไปยังหน้าประวัติการสมัครงาน...");
+
+        setIsLoggedIn(true); // ✅ บังคับให้อัปเดต Token เป็น Logged In
+        navigate("/job-history");
+      } else {
+        alert("❌ เกิดข้อผิดพลาด: " + response.message);
+      }
     } catch (error) {
-      console.error(
-        "❌ Error submitting job application:",
-        error.response?.data || error.message
-      );
+      console.error("❌ สมัครงานล้มเหลว:", error);
+      alert("❌ อัปโหลดไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 shadow-lg rounded-lg max-w-lg mx-auto"
-      >
-        <h2 className="text-xl font-bold mb-4 text-center">สมัครงาน</h2>
+    <div className="w-full min-h-screen flex flex-col bg-gradient-to-b from-yellow-50 to-yellow-200">
+      <div className="container mx-auto p-4 flex-grow">
+        {/* ✅ อัปโหลดเอกสาร */}
+        <div className="flex flex-col space-y-4 max-w-lg mx-auto">
+          {[
+            { label: "๑. รูปถ่ายขนาด ๑ นิ้ว", key: "profileImage" },
+            { label: "๒. สำเนาบัตรประชาชน", key: "idCardImage" },
+            { label: "๓. สำเนาทะเบียนบ้าน", key: "houseRegistrationImage" },
+            { label: "๔. สำเนาวุฒิการศึกษา", key: "degreeCertificateImage" },
+            { label: "๕. ใบ Transcript", key: "transcriptImage" },
+            { label: "๖. ใบรับรองการทำงาน", key: "workCertificateImage" },
+            { label: "๗. ใบรับรองแพทย์", key: "medicalCertificateImage" },
+            { label: "๘. ประวัติอาชญากรรม", key: "criminalRecordImage" },
+            { label: "๙. Passport", key: "passportImage" },
+            { label: "๑๐. ใบขับขี่", key: "drivingLicenseImage" },
+          ].map(({ label, key }) => (
+            <UploadBoxFrom
+              key={key}
+              label={label}
+              onFileSelect={(file) => handleFileSelect(key, file)}
+            />
+          ))}
+        </div>
 
-        <p className="mb-4 text-gray-600 text-center">
-          สมัครงานสำหรับตำแหน่ง: <b>{formData.jobId || "กำลังโหลด..."}</b>
-        </p>
+        {/* 🔹 เส้นขีดคั่น 🔹 */}
+        <hr className="border-t-2 border-gray-300 my-8" />
 
-        <label className="block mb-2">
-          รูปโปรไฟล์:
-          <input
-            type="file"
-            name="profileImage"
-            onChange={handleFileChange}
-            className="file-input w-full"
-          />
-        </label>
+        {/* ✅ แบบฟอร์มข้อมูลส่วนตัว */}
+        <div className="mb-6">
+          <InputFrom onInputChange={handleInputChange} />
+        </div>
 
-        <label className="block mb-2">
-          ข้อมูลส่วนตัว:
-          <input
-            type="text"
-            name="personalInfo"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          ประวัติการศึกษา:
-          <input
-            type="text"
-            name="educationHistory"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          ประวัติการทำงาน:
-          <input
-            type="text"
-            name="workHistory"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-        </label>
-
-        <label className="block mb-2">
-          ความสามารถพิเศษ:
-          <textarea
-            name="specialSkills"
-            onChange={handleChange}
-            className="textarea textarea-bordered w-full"
-          ></textarea>
-        </label>
-
-        <button type="submit" className="btn btn-primary w-full">
-          ส่งใบสมัคร
-        </button>
-      </form>
+        {/* ✅ ปุ่มสมัครงาน */}
+        <div className="mt-12 flex justify-center">
+          <button
+            className={`py-2 px-6 rounded-lg shadow-md text-lg ${
+              validateForm() ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
+            } text-white`}
+            onClick={handleSubmit}
+            disabled={!validateForm()}
+          >
+            📩 สมัครงาน
+          </button>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default JobApplicationForm;
+export default RegisterFromPage;

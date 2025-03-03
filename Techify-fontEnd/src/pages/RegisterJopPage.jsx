@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { getJobs } from "../api/jobApi";
-import Banner from "../components/Banner";
+import { useNavigate } from "react-router-dom";
+// import Banner from "../components/Banner";
 
 const RegisterJob = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // ✅ สำหรับเปลี่ยนหน้า
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -38,6 +41,12 @@ const RegisterJob = () => {
         tableData.filter((job) => job.JobName.toLowerCase().includes(query))
       );
     }
+  };
+
+  // ✅ ฟังก์ชันสำหรับกดปุ่ม "สมัครงาน"
+  const handleApply = (jobId) => {
+    // สั่ง navigate ไปยังเส้นทางฟอร์ม + jobId
+    navigate(`/registerFrom/${jobId}`);
   };
 
   return (
@@ -119,6 +128,7 @@ const RegisterJob = () => {
                                 : "bg-gradient-to-r from-blue-500 to-blue-700 hover:scale-105 hover:shadow-xl"
                             }`}
                             disabled={isClosed}
+                            onClick={() => !isClosed && handleApply(job.id)}
                           >
                             {isClosed ? "ปิดรับสมัคร" : "สมัครงาน"}
                           </button>

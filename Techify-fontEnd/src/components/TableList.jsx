@@ -109,15 +109,18 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
             {tableData.map((job, index) => (
               <tr key={job.id} className="hover:bg-gray-100">
                 <td className="px-4 py-3 text-sm">{index + 1}</td>
-                <td className="px-4 py-3 text-sm font-medium text-gray-800 dark:text-white">
+
+                {/* ✅ ตัวอย่างการใส่ Utility Class เพื่อรองรับข้อความยาวๆ (Responsive) */}
+                <td className="px-4 py-3 text-sm font-medium text-gray-800 dark:text-white break-words whitespace-normal max-w-[200px]">
                   {job.JobName}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
                   {job.Description}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
                   {job.Location}
                 </td>
+
                 <td className="px-4 py-3">
                   <span
                     className={`px-3 py-1 text-xs font-medium rounded-full ${

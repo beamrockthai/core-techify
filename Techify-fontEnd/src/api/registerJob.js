@@ -1,8 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/employees"; // ✅ ตรวจสอบให้แน่ใจว่าเซิร์ฟเวอร์รันที่พอร์ต 3000
+const API_URL = "http://localhost:3000/api/employees"; // เปลี่ยนเป็น URL Backend ของคุณ
 
-// ✅ ฟังก์ชันสมัครงาน
 export const registerJob = async (formData) => {
   try {
     const token = localStorage.getItem("token");
@@ -11,7 +10,7 @@ export const registerJob = async (formData) => {
       throw new Error("Token not found, please login again.");
     }
 
-    const response = await axios.post(`${API_URL}/app`, formData, {
+    const response = await axios.post(`${API_URL}/register`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -52,6 +51,34 @@ export const getJobHistory = async () => {
   } catch (error) {
     console.error(
       "❌ Error during job history fetch:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+// ✅ ฟังก์ชันยกเลิกการสมัครงาน
+export const cancelRegisterJob = async (applicationId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Token not found, please login again.");
+    }
+
+    const response = await axios.delete(
+      `${API_URL}/cancelrejob/${applicationId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "❌ Error during job cancellation:",
       error.response?.data || error.message
     );
     throw error;

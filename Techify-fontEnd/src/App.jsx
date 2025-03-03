@@ -4,7 +4,7 @@ import NavbarLogin from "../src/components/NavBar"; // Navbar สำหรับ
 import NavbarMain from "../src/components/NavBarMain"; // Navbar สำหรับหน้าหลังจากล็อกอิน
 import JobPage from "./pages/๋JopPage";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import RegisterFromPage from "./pages/RegisterFromPage";
 import HomeMain from "./pages/HomeMain";
 import Profile from "./pages/Profile";
 import RegisterJob from "./pages/RegisterJopPage";
@@ -62,12 +62,12 @@ function App() {
             !isLoggedIn ? <LoginPage /> : <Navigate to="/main" replace />
           }
         />
-        <Route
+        {/* <Route
           path="/register"
           element={
             !isLoggedIn ? <RegisterPage /> : <Navigate to="/main" replace />
           }
-        />
+        /> */}
         <Route
           path="/main"
           element={isLoggedIn ? <HomeMain /> : <Navigate to="/login" replace />}
@@ -96,6 +96,13 @@ function App() {
         />
 
         <Route
+          path="/registerFrom/:jobId"
+          element={
+            isLoggedIn ? <RegisterFromPage /> : <Navigate to="/login" replace />
+          }
+        />
+
+        {/* <Route
           path="/registerJobStep1/:jobId"
           element={
             isLoggedIn ? (
@@ -104,7 +111,7 @@ function App() {
               <Navigate to="/login" replace />
             )
           }
-        />
+        /> */}
       </Routes>
     </>
   );
