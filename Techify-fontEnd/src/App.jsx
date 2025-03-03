@@ -2,15 +2,16 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NavbarLogin from "../src/components/NavBar"; // Navbar สำหรับหน้า Login/Register
 import NavbarMain from "../src/components/NavBarMain"; // Navbar สำหรับหน้าหลังจากล็อกอิน
-import JobPage from "./pages/๋JopPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterFromPage from "./pages/RegisterFromPage";
+import JobPage from "./pages/๋JopPage"; //หน้าประกาศงาน
+import LoginPage from "./pages/LoginPage"; // หน้า login
+import RegisterFromPage from "./pages/RegisterFromPage"; // หน้าสมัครงาน
 import HomeMain from "./pages/HomeMain";
 import Profile from "./pages/Profile";
 import RegisterJob from "./pages/RegisterJopPage";
 import JobApplicationForm from "./pages/๋JopRegisterFrom";
 import LoginSuccess from "./components/LoginSuccess";
 import JobHistoryPage from "./pages/JobHistoryPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,30 +57,36 @@ function App() {
             )
           }
         />
+
         <Route
           path="/login"
           element={
             !isLoggedIn ? <LoginPage /> : <Navigate to="/main" replace />
           }
         />
-        {/* <Route
+
+        <Route
           path="/register"
           element={
             !isLoggedIn ? <RegisterPage /> : <Navigate to="/main" replace />
           }
-        /> */}
+        />
+
         <Route
           path="/main"
           element={isLoggedIn ? <HomeMain /> : <Navigate to="/login" replace />}
         />
+
         <Route
           path="/jobs"
           element={isLoggedIn ? <JobPage /> : <Navigate to="/login" replace />}
         />
+
         <Route
           path="/profile"
           element={isLoggedIn ? <Profile /> : <Navigate to="/login" replace />}
         />
+
         <Route
           path="/registerJob"
           element={
