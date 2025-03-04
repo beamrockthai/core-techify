@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getJobs } from "../api/jobApi";
 import { useNavigate } from "react-router-dom";
+import Notification from "../components/Notification";
 // import Banner from "../components/Banner";
 
 const RegisterJob = () => {
@@ -8,6 +9,7 @@ const RegisterJob = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(true);
 
   const navigate = useNavigate(); // ✅ สำหรับเปลี่ยนหน้า
 
@@ -52,6 +54,10 @@ const RegisterJob = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-8 px-4 flex flex-col font-sans">
       <div className="container mx-auto">
+        {/* ✅ แสดง Popup นโยบายความเป็นส่วนตัว */}
+        {showPrivacyPolicy && (
+          <Notification onClose={() => setShowPrivacyPolicy(false)} />
+        )}
         {/* ✅ เพิ่มช่องค้นหางาน */}
         <div className="mb-4 flex justify-between items-center">
           <h2 className="text-lg font-semibold text-gray-700">

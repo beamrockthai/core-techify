@@ -4,6 +4,7 @@ const {
   getRegisterJob,
   updateApplicationStatus,
   cancelRegisterJob,
+  getAllRegisterJobs,
 } = require("../../EmployeeRe/Controller/Employee.controller");
 
 const authenticateToken = require("../../User/middleware/authMiddleware");
@@ -40,4 +41,5 @@ router.put("/update/:id", authenticateToken, updateApplicationStatus);
 // ✅ ยกเลิกการสมัครงานของตัวเอง
 router.delete("/cancelrejob/:id", authenticateToken, cancelRegisterJob);
 
+router.get("/allregisterjob", authenticateToken, getAllRegisterJobs);
 module.exports = router;

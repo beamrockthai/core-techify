@@ -59,9 +59,9 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ✅ ส่วนหลักของหน้า Login */}
+      {/*  ส่วนหลักของหน้า Login */}
       <div className="flex-grow flex flex-col md:flex-row items-center justify-center bg-gray-100 relative">
-        {/* ✅ Background ที่เปลี่ยนและเลื่อนอัตโนมัติ */}
+        {/*  Background ที่เปลี่ยนและเลื่อนอัตโนมัติ */}
         <div
           className="absolute inset-0 bg-no-repeat bg-cover bg-center opacity-80 animate-bgScroll transition-all duration-1000 ease-in-out"
           style={{
@@ -69,18 +69,17 @@ const LoginPage = () => {
           }}
         ></div>
 
-        {/* ✅ ส่วนข้อความต้อนรับ */}
+        {/* ส่วนข้อความต้อนรับ */}
         <div className="hidden md:flex flex-col text-black drop-shadow-lg w-2/5 text-left z-10 p-10 bg-white/50 backdrop-blur-md rounded-lg">
-          <h1 className="text-4xl font-bold mb-4 leading-tight">
-            ยินดีต้อนรับสู่อนาคตใหม่ของคุณ! 🚀
+          <h1 className="text-3xl font-bold mb-2 leading-tight text-center ">
+            องค์การบริหารส่วนจังหวัดนนทบุรี
           </h1>
-          <p className="text-lg opacity-90">
-            ค้นพบโอกาสที่ใช่ สร้างเส้นทางอาชีพในฝันของคุณกับบริษัทชั้นนำ
-            สมัครง่าย ได้งานไว!
+          <p className="text-lg opacity-90 text-center">
+            NONTHABURI PROVINCIAL ADMINISTRATIVE ORGANIZATION
           </p>
         </div>
 
-        {/* ✅ ฟอร์มล็อกอิน */}
+        {/*  ฟอร์มล็อกอิน */}
         <div className="w-full md:w-2/5 flex justify-center relative z-10">
           <div className="bg-white shadow-lg border border-gray-200 p-8 rounded-lg w-full max-w-md">
             <h3 className="text-2xl font-semibold text-gray-800 text-center">
@@ -155,7 +154,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* ✅ Loading Spinner เมื่อกดล็อกอิน */}
+      {/*  Loading Spinner เมื่อกดล็อกอิน */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center animate-fade">

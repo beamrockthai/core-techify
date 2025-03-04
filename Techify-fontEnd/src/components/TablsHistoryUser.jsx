@@ -37,45 +37,48 @@ const TableHistory = ({ data, refreshData }) => {
   };
 
   return (
-    <div className="overflow-x-auto rounded-lg shadow-lg font-semibold">
-      <table className="w-full border border-gray-200">
-        <thead className="bg-gray-100">
+    <div className="overflow-x-auto shadow-lg rounded-lg bg-white">
+      <table className="table table-auto w-full text-xs md:text-sm lg:text-base">
+        <thead className="bg-base-200">
           <tr>
-            <th className="px-4 py-3 text-left font-semibold">#</th>
-            <th className="px-4 py-3 text-left font-semibold">ชื่องาน</th>
-            <th className="px-4 py-3 text-left font-semibold">วันที่สมัคร</th>
-            <th className="px-4 py-3 text-left font-semibold">สถานะ</th>
-            <th className="px-4 py-3 text-left font-semibold">Download</th>
-            <th className="px-4 py-3 text-left font-semibold">ยกเลิก</th>
+            <th className="px-2 md:px-4 py-3">#</th>
+            <th className="px-2 md:px-4 py-3">ชื่องาน</th>
+            <th className="px-2 md:px-4 py-3">วันที่สมัคร</th>
+            <th className="px-2 md:px-4 py-3">สถานะ</th>
+            <th className="px-2 md:px-4 py-3 text-center">Download</th>
+            <th className="px-2 md:px-4 py-3 text-center">ยกเลิก</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan="6" className="text-center py-4 font-semibold">
+              <td
+                colSpan="6"
+                className="text-center py-4 font-semibold text-error"
+              >
                 ไม่มีประวัติการสมัคร
               </td>
             </tr>
           ) : (
             data.map((job, index) => (
-              <tr key={job.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3">{index + 1}</td>
-                <td className="px-4 py-3">
+              <tr key={job.id} className="hover:bg-base-100">
+                <td className="px-2 md:px-4 py-3">{index + 1}</td>
+                <td className="px-2 md:px-4 py-3">
                   {job.Job?.JobName || "ไม่พบข้อมูล"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 md:px-4 py-3">
                   {job.createdAt
                     ? new Date(job.createdAt).toLocaleDateString()
                     : "-"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 md:px-4 py-3">
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    className={`badge badge-sm md:badge-md text-white ${
                       job.status === "accepted"
-                        ? "bg-green-500 text-white"
+                        ? "badge-success"
                         : job.status === "rejected"
-                        ? "bg-red-500 text-white"
-                        : "bg-yellow-500 text-white"
+                        ? "badge-error"
+                        : "badge-warning"
                     }`}
                   >
                     {job.status === "accepted"
@@ -85,18 +88,18 @@ const TableHistory = ({ data, refreshData }) => {
                       : "รอการตรวจสอบ"}
                   </span>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 md:px-4 py-3 text-center">
                   <button
                     onClick={() => generatePDF([job])}
-                    className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition font-semibold"
+                    className="btn btn-primary btn-xs md:btn-sm lg:btn-md w-full md:w-auto"
                   >
                     Download
                   </button>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 md:px-4 py-3 text-center">
                   <button
                     onClick={() => handleCancel(job.id)}
-                    className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition font-semibold"
+                    className="btn btn-error btn-xs md:btn-sm lg:btn-md w-full md:w-auto"
                   >
                     ยกเลิก
                   </button>

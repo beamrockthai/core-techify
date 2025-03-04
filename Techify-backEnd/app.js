@@ -68,6 +68,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //RegisterJob
 app.use("/api/employees", EmployeeRoutes);
 
+//route admin
+app.use("/api/admin", Admin);
+
 // LINE Login Routes
 app.use(authRoutes);
 

@@ -201,3 +201,50 @@ exports.cancelRegisterJob = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// 🔹 ดึงข้อมูลการสมัครงานทั้งหมด (Admin เท่านั้น)
+exports.getAllRegisterJobs = async (req, res) => {
+  try {
+    if (!req.user || req.user.role !== "admin") {
+      // ✅ เฉพาะแอดมินเท่านั้นที่สามารถเข้าถึง
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden: Only admins can access this data",
+      });
+    }
+
+    // ค้นหาทุกใบสมัคร พร้อมข้อมูลของ User และ Job
+    const applications = await Employee.findAll({
+      include: [
+        {
+          model: Job,
+          attributes: ["id", "JobName", "Description", "Location"], // ✅ ดึงข้อมูลตำแหน่งงาน
+        },
+        {
+          model: User,
+          attributes: [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "phoneNumber",
+            "nationalId",
+            "birhDate",
+            "houseNumber",
+            "village",
+            "province",
+            "district",
+            "subDistrict",
+            "postalCode",
+          ], // ✅ ดึงข้อมูลผู้สมัคร
+        },
+      ],
+      order: [["createdAt", "DESC"]], // ✅ เรียงลำดับจากล่าสุด -> เก่าสุด
+    });
+
+    res.status(200).json({ success: true, data: applications });
+  } catch (error) {
+    console.error("❌ Error in getAllRegisterJobs:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
