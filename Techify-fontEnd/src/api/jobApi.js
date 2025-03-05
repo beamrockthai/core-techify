@@ -13,6 +13,21 @@ export const getJobs = async () => {
   }
 };
 
+//ดึง Id งาน
+export const getJobById = async (id) => {
+  try {
+    console.log("📡 Fetching Job by ID:", id); // ✅ Debug ID ที่ใช้เรียก API
+    const response = await axios.get(`${API_URL}/${id}`);
+    console.log("✅ API Response:", response.data);
+    return response.data.data; // ❌ อย่าทำ `parseInt(id)` เพราะ `id` เป็น `string`
+  } catch (error) {
+    console.error("❌ Error fetching job by ID:", error);
+    throw error;
+  }
+};
+
+
+
 // เพิ่มงานใหม่
 export const addJob = async (jobData) => {
   try {

@@ -84,7 +84,7 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
 
       {/* Table Section */}
       <div className="mt-6 overflow-auto rounded-lg shadow-md">
-        <table className="w-full min-w-max divide-y divide-gray-200 dark:divide-gray-700">
+        <table className="w-full min-w-[850px]  divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {[
@@ -92,6 +92,9 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
                 "งาน",
                 "รายละเอียด",
                 "ที่อยู่",
+                "คุณสมบัติ",
+                "ระยะเวลา",
+                "อัตราตอบเเทน",
                 "สถานะ",
                 "อัปเดท",
                 "ลบ",
@@ -120,6 +123,20 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
                 <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
                   {job.Location}
                 </td>
+
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
+                  {job.Respon}
+                </td>
+
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
+                  {job.Period}
+                </td>
+
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-words whitespace-normal max-w-[300px]">
+                  {job.Ror}
+                </td>
+
+               
 
                 <td className="px-4 py-3">
                   <span

@@ -12,14 +12,34 @@ const Job = sequelize.define("Job", {
     type: DataTypes.STRING, // กำหนดชนิดของฟิว
     allowNull: false, // ไม่ให้มีค่าว่าง
   },
+
   Description: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
+
+  Respon:{
+  type: DataTypes.TEXT,
+  allowNull:true,
+  },
+
+  Period:{
+    type:DataTypes.TEXT,
+    allowNull:true,
+
+  },
+
+  Ror:{
+    type:DataTypes.TEXT,
+    allowNull:true,
+
+  },
+
   Location: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+
   IsActive: {
     type: DataTypes.BOOLEAN,
     allowNull: false,

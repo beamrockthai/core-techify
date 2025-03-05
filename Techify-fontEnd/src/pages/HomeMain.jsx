@@ -84,7 +84,7 @@ const HomeMain = () => {
           ) : jobs.length > 0 ? (
             <Swiper
               spaceBetween={20}
-              slidesPerView={1.2} // ✅ ให้เลื่อนไปด้านข้าง
+              slidesPerView={1} // ✅ ให้เลื่อนไปด้านข้าง
               centeredSlides={false}
               breakpoints={{
                 640: { slidesPerView: 1.5 },

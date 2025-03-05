@@ -10,6 +10,9 @@ export default function ModalForm({
   const [JobName, setJobName] = useState("");
   const [Description, setDescription] = useState("");
   const [Location, setLocation] = useState("");
+  const [Respon,setRespon] = useState("");
+  const [Period,setPeriod] = useState("");
+  const [Ror,setRor] = useState("");
   const [status, setStatus] = useState(false);
 
   // ฟังก์ชันเปลี่ยนค่า Status
@@ -21,7 +24,7 @@ export default function ModalForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const jobData = { JobName, Description, Location, IsActive: status };
+      const jobData = { JobName, Description, Location, Respon, Period , Ror, IsActive: status };
       await onSubmit(jobData);
       onClose();
     } catch (error) {
@@ -35,10 +38,16 @@ export default function ModalForm({
       setJobName(jobData.JobName);
       setDescription(jobData.Description);
       setLocation(jobData.Location);
+      setRespon(jobData.Respon);
+      setPeriod(jobData.Period);
+      setRor(jobData.Ror);
       setStatus(jobData.IsActive);
     } else {
       setJobName("");
       setDescription("");
+      setRespon("");
+      setPeriod("");
+      setRor("");
       setLocation("");
       setStatus(false);
     }
@@ -96,6 +105,49 @@ export default function ModalForm({
                   required
                 />
               </div>
+
+               {/* คุณสมบัติ */}
+               <div>
+                <label className="text-gray-700 dark:text-gray-200">
+                  คุณสมบัติ
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-4 py-2 mt-2 border rounded-md focus:border-blue-400 focus:ring focus:ring-blue-300 dark:bg-gray-800 dark:text-gray-300"
+                  value={Respon}
+                  onChange={(e) => setRespon(e.target.value)}
+                  required
+                />
+              </div>
+
+               {/* ระยะเวลา */}
+               <div>
+                <label className="text-gray-700 dark:text-gray-200">
+                  ระยะเวลา
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-4 py-2 mt-2 border rounded-md focus:border-blue-400 focus:ring focus:ring-blue-300 dark:bg-gray-800 dark:text-gray-300"
+                  value={Period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  required
+                />
+              </div>
+
+                 {/* อัตราตอบเเทน */}
+                 <div>
+                <label className="text-gray-700 dark:text-gray-200">
+                  อัตราตอบเเทน
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-4 py-2 mt-2 border rounded-md focus:border-blue-400 focus:ring focus:ring-blue-300 dark:bg-gray-800 dark:text-gray-300"
+                  value={Ror}
+                  onChange={(e) => setRor(e.target.value)}
+                  required
+                />
+              </div>
+
 
               {/* สถานะงาน */}
               <div>

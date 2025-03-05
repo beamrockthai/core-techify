@@ -12,6 +12,8 @@ import JobApplicationForm from "./pages/๋JopRegisterFrom";
 import LoginSuccess from "./components/LoginSuccess";
 import JobHistoryPage from "./pages/JobHistoryPage";
 import RegisterPage from "./pages/RegisterPage";
+import Ifpage from "./pages/Ifpage";
+import JobDetail from "./components/Details";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -88,6 +90,13 @@ function App() {
         />
 
         <Route
+          path="/ifpage/:jobId"
+          element={
+            isLoggedIn ? <Ifpage /> : <Navigate to="/login" replace />
+          }
+        />
+
+<Route
           path="/registerJob"
           element={
             isLoggedIn ? <RegisterJob /> : <Navigate to="/login" replace />
@@ -99,6 +108,13 @@ function App() {
           path="/job-history"
           element={
             isLoggedIn ? <JobHistoryPage /> : <Navigate to="/login" replace />
+          }
+        />
+
+<Route
+          path="/jobDetail/:jobId"
+          element={
+            isLoggedIn ? <JobDetail /> : <Navigate to="/login" replace />
           }
         />
 
