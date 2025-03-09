@@ -31,18 +31,34 @@ exports.loginUser = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email and password are required" });
     }
+
     const user = await User.findOne({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
     }
+
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role }, // ✅ ใส่ role ใน token
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    res.status(200).json({ success: true, message: "Login successful", token });
+
+    // ✅ ตรวจสอบก่อนว่า user มีค่าไหม
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // ✅ ส่งข้อมูล `user` กลับไปให้ Frontend
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: { id: user.id, email: user.email, role: user.role },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -30,61 +30,118 @@ exports.registerForJob = async (req, res) => {
         .json({ success: false, message: "Invalid status value" });
     }
 
+    // ✅ ตรวจสอบและแปลง personalInfo เป็น Object เสมอ
+    const personalInfo =
+      typeof req.body.personalInfo === "string"
+        ? JSON.parse(req.body.personalInfo || "{}")
+        : req.body.personalInfo || {};
+
+    console.log("✅ personalInfo หลังแปลง:", personalInfo);
+
+    // ✅ ฟังก์ชันช่วยแปลงค่าที่เป็นตัวเลข ป้องกัน NaN
+    const parseInteger = (value) => {
+      const parsed = parseInt(value, 10);
+      return isNaN(parsed) ? null : parsed;
+    };
+
+    // ✅ บันทึกข้อมูลลงฐานข้อมูล
     const application = await Employee.create({
       jobId,
       userId: req.user.id,
-      profileImage: req.files?.profileImage
+
+      // 🖼️ เก็บรูปภาพ
+      profileImage: req.files?.profileImage?.[0]?.filename
         ? `uploads/${req.files.profileImage[0].filename}`
         : null,
-      idCardImage: req.files?.idCardImage
+      idCardImage: req.files?.idCardImage?.[0]?.filename
         ? `uploads/${req.files.idCardImage[0].filename}`
         : null,
-      houseRegistrationImage: req.files?.houseRegistrationImage
+      houseRegistrationImage: req.files?.houseRegistrationImage?.[0]?.filename
         ? `uploads/${req.files.houseRegistrationImage[0].filename}`
         : null,
-      degreeCertificateImage: req.files?.degreeCertificateImage
+      degreeCertificateImage: req.files?.degreeCertificateImage?.[0]?.filename
         ? `uploads/${req.files.degreeCertificateImage[0].filename}`
         : null,
-      transcriptImage: req.files?.transcriptImage
+      transcriptImage: req.files?.transcriptImage?.[0]?.filename
         ? `uploads/${req.files.transcriptImage[0].filename}`
         : null,
-      workCertificateImage: req.files?.workCertificateImage
+      workCertificateImage: req.files?.workCertificateImage?.[0]?.filename
         ? `uploads/${req.files.workCertificateImage[0].filename}`
         : null,
-      medicalCertificateImage: req.files?.medicalCertificateImage
+      medicalCertificateImage: req.files?.medicalCertificateImage?.[0]?.filename
         ? `uploads/${req.files.medicalCertificateImage[0].filename}`
         : null,
-      criminalRecordImage: req.files?.criminalRecordImage
+      criminalRecordImage: req.files?.criminalRecordImage?.[0]?.filename
         ? `uploads/${req.files.criminalRecordImage[0].filename}`
         : null,
-      passportImage: req.files?.passportImage
+      passportImage: req.files?.passportImage?.[0]?.filename
         ? `uploads/${req.files.passportImage[0].filename}`
         : null,
-      drivingLicenseImage: req.files?.drivingLicenseImage
+      drivingLicenseImage: req.files?.drivingLicenseImage?.[0]?.filename
         ? `uploads/${req.files.drivingLicenseImage[0].filename}`
         : null,
       attachedFiles: req.files?.attachedFiles
         ? req.files.attachedFiles.map((file) => `uploads/${file.filename}`)
         : [],
-      personalInfo: req.body.personalInfo
-        ? JSON.parse(req.body.personalInfo)
-        : null,
-      additionalPersonalInfo: req.body.additionalPersonalInfo
-        ? JSON.parse(req.body.additionalPersonalInfo)
-        : null,
-      currentAddress: req.body.currentAddress
-        ? JSON.parse(req.body.currentAddress)
-        : null,
-      emergencyContact: req.body.emergencyContact
-        ? JSON.parse(req.body.emergencyContact)
-        : null,
-      educationHistory: req.body.educationHistory
-        ? JSON.parse(req.body.educationHistory)
-        : null,
-      workHistory: req.body.workHistory
-        ? JSON.parse(req.body.workHistory)
-        : null,
-      specialSkills: req.body.specialSkills,
+
+      // 📝 ข้อมูลผู้สมัคร
+      firstName: personalInfo.firstName || null,
+      lastName: personalInfo.lastName || null,
+      birthDate: personalInfo.birhDate ? new Date(personalInfo.birhDate) : null, // แปลงเป็น Date
+      age: parseInteger(personalInfo.age), // ✅ ใช้ฟังก์ชันตรวจสอบค่า
+      month: parseInteger(personalInfo.month), // ✅ ใช้ฟังก์ชันตรวจสอบค่า
+      nationality: personalInfo.nationality || null,
+      ethnicity: personalInfo.ethnicity || null,
+      religion: personalInfo.religion || null,
+      placeOfBirth: personalInfo.placeOfBirth || null,
+
+      // 🏡 ที่อยู่
+      houseNumber: personalInfo.houseNumber || null,
+      village: personalInfo.village || null,
+      subdistrict: personalInfo.subdistrict || null,
+      district: personalInfo.district || null,
+      province: personalInfo.province || null,
+      postalCode: personalInfo.postalCode || null,
+      phoneNumber: personalInfo.phoneNumber || null,
+
+      // สถานะสมรส
+      maritalStatus: personalInfo.maritalStatus || null,
+
+      // ข้อมูลบิดามารดา
+      firstNameDad: personalInfo.firstNameDad || null,
+      lastNameDad: personalInfo.lastNameDad || null,
+      nationalityDad: personalInfo.nationalityDad || null,
+      occupationDad: personalInfo.occupationDad || null,
+      firstNameMother: personalInfo.firstNameMother || null,
+      lastNameMother: personalInfo.lastNameMother || null,
+      nationalityMother: personalInfo.nationalityMother || null,
+      occupationMother: personalInfo.occupationMother || null,
+
+      // ผู้ติดต่อฉุกเฉิน
+      firstNameEmergency: personalInfo.firstNameEmergency || null,
+      lastNameEmergency: personalInfo.lastNameEmergency || null,
+      phoneNumberEmergency: personalInfo.phoneNumberEmergency || null,
+      houseNumberEmergency: personalInfo.houseNumberEmergency || null,
+      villageEmergency: personalInfo.villageEmergency || null,
+      alleyRoad: personalInfo.alleyRoad || null,
+      subdistrictEmergency: personalInfo.subdistrictEmergency || null,
+      districtEmergency: personalInfo.districtEmergency || null,
+      provinceEmergency: personalInfo.provinceEmergency || null,
+
+      // ประวัติการศึกษาและทำงาน
+      degreeEarned: personalInfo.degreeEarned || null,
+      major: personalInfo.major || null,
+      gpa: personalInfo.gpa || null,
+      institutionName: personalInfo.institutionName || null,
+      periodofStudy: personalInfo.periodofStudy || null,
+      workPlace: personalInfo.workPlace || null,
+      position: personalInfo.position || null,
+      lastSalary: personalInfo.lastSalary || null,
+      employmentDuration: personalInfo.employmentDuration || null,
+      reason: personalInfo.reason || null,
+      specialSkills: personalInfo.specialSkills || null,
+
+      // 🟢 สถานะการสมัคร
       status: status,
     });
 
@@ -110,23 +167,23 @@ exports.getRegisterJob = async (req, res) => {
           model: Job,
           attributes: ["id", "JobName", "Description", "Location"], // ✅ ดึงข้อมูลงานที่สมัคร
         },
-        {
-          model: User, // ✅ ดึงข้อมูล User ที่สมัคร
-          attributes: [
-            "firstName",
-            "lastName",
-            "email",
-            "phoneNumber",
-            "nationalId",
-            "birhDate",
-            "houseNumber",
-            "village",
-            "province",
-            "district",
-            "subDistrict",
-            "postalCode",
-          ], // ✅ เอาเฉพาะฟิลด์ที่ต้องใช้
-        },
+        // {
+        //   model: User, // ✅ ดึงข้อมูล User ที่สมัคร
+        //   attributes: [
+        //     "firstName",
+        //     "lastName",
+        //     "email",
+        //     "phoneNumber",
+        //     "nationalId",
+        //     "birhDate",
+        //     "houseNumber",
+        //     "village",
+        //     "province",
+        //     "district",
+        //     "subDistrict",
+        //     "postalCode",
+        //   ], // ✅ เอาเฉพาะฟิลด์ที่ต้องใช้
+        // },
       ],
     });
 

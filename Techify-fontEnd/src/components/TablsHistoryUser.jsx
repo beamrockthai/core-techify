@@ -1,7 +1,7 @@
 import React from "react";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert2
-import { generatePDF } from "../utils/pdf/ExportPDF";
 import { cancelRegisterJob } from "../api/registerJob";
+import { downloadPDF } from "../api/ExportPdf"; // ✅ นำเข้า API สำหรับดาวน์โหลด PDF
 
 const TableHistory = ({ data, refreshData }) => {
   console.log("📌 TableHistory received data:", data);
@@ -90,7 +90,7 @@ const TableHistory = ({ data, refreshData }) => {
                 </td>
                 <td className="px-2 md:px-4 py-3 text-center">
                   <button
-                    onClick={() => generatePDF([job])}
+                    onClick={() => downloadPDF(job)} // ✅ เรียกใช้ API ที่แยกออกมา
                     className="btn btn-primary btn-xs md:btn-sm lg:btn-md w-full md:w-auto"
                   >
                     Download

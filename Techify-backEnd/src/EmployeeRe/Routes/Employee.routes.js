@@ -19,6 +19,24 @@ router.post(
   (req, res, next) => {
     console.log("✅ Route /register Called - Received request:", req.body);
     console.log("✅ Received files:", req.files);
+
+    // ✅ ตรวจสอบว่า personalInfo มีค่าหรือไม่
+    if (req.body.personalInfo) {
+      try {
+        // 🔹 แปลง personalInfo จาก JSON string เป็น Object
+        req.body.personalInfo = JSON.parse(req.body.personalInfo);
+        console.log("✅ personalInfo หลังแปลง:", req.body.personalInfo);
+      } catch (error) {
+        console.error("❌ JSON.parse() failed:", error);
+        return res
+          .status(400)
+          .json({ error: "Invalid JSON format in personalInfo" });
+      }
+    } else {
+      return res.status(400).json({ error: "personalInfo is missing" });
+    }
+
+    console.log("📌 ข้อมูลที่ได้รับจาก Frontend:", req.body);
     next();
   },
   registerForJob

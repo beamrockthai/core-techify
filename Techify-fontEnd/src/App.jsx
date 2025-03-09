@@ -13,26 +13,45 @@ import LoginSuccess from "./components/LoginSuccess";
 import JobHistoryPage from "./pages/JobHistoryPage";
 import RegisterPage from "./pages/RegisterPage";
 import Ifpage from "./pages/Ifpage";
-import JobDetail from "./components/Details";
+import AdminDashboard from "./admin/Adminpagehistory";
+import DetailsPage from "./pages/DetailsPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
-      console.log("🔹 Checking token in App:", token);
+      const userData = localStorage.getItem("user");
+
+      console.log("🔹 Checking token:", token);
+      console.log("🔹 Checking userData:", userData);
+
       setIsLoggedIn(!!token);
+
+      if (userData && userData !== "undefined") {
+        try {
+          setUserRole(JSON.parse(userData).role);
+        } catch (error) {
+          console.error("❌ Error parsing userData:", error);
+          setUserRole(null);
+        }
+      } else {
+        setUserRole(null);
+      }
     };
 
-    checkAuth(); // ตรวจสอบสถานะตอนโหลดหน้า
-    const interval = setInterval(checkAuth, 1000); // ตรวจสอบทุก 1 วินาที
+    checkAuth();
+    const interval = setInterval(checkAuth, 1000);
     return () => clearInterval(interval);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
+    setUserRole(null);
   };
 
   return (
@@ -59,14 +78,12 @@ function App() {
             )
           }
         />
-
         <Route
           path="/login"
           element={
             !isLoggedIn ? <LoginPage /> : <Navigate to="/main" replace />
           }
         />
-
         <Route
           path="/register"
           element={
@@ -74,50 +91,37 @@ function App() {
           }
         />
 
+        {/* ✅ User Routes */}
         <Route
           path="/main"
           element={isLoggedIn ? <HomeMain /> : <Navigate to="/login" replace />}
         />
-
-        <Route
-          path="/jobs"
-          element={isLoggedIn ? <JobPage /> : <Navigate to="/login" replace />}
-        />
-
         <Route
           path="/profile"
           element={isLoggedIn ? <Profile /> : <Navigate to="/login" replace />}
         />
-
-        <Route
-          path="/ifpage/:jobId"
-          element={
-            isLoggedIn ? <Ifpage /> : <Navigate to="/login" replace />
-          }
-        />
-
-<Route
-          path="/registerJob"
-          element={
-            isLoggedIn ? <RegisterJob /> : <Navigate to="/login" replace />
-          }
-        />
-
-        {/* ✅ เส้นทางหน้า "ประวัติการสมัครงาน" */}
         <Route
           path="/job-history"
           element={
             isLoggedIn ? <JobHistoryPage /> : <Navigate to="/login" replace />
           }
         />
-
-<Route
-          path="/jobDetail/:jobId"
+        <Route
+          path="/registerJob"
           element={
-            isLoggedIn ? <JobDetail /> : <Navigate to="/login" replace />
+            isLoggedIn ? <RegisterJob /> : <Navigate to="/login" replace />
           }
         />
-
+        <Route
+          path="/ifpage/:jobId"
+          element={isLoggedIn ? <Ifpage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/DetailPage/:jobId"
+          element={
+            isLoggedIn ? <DetailsPage /> : <Navigate to="/login" replace />
+          }
+        />
         <Route
           path="/registerFrom/:jobId"
           element={
@@ -125,15 +129,31 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/registerJobStep1/:jobId"
+        {/* ✅ Admin Routes (Admin เท่านั้น) */}
+        <Route
+          path="/adminHis"
           element={
-            isLoggedIn ? (
-              <JobApplicationForm />
+            isLoggedIn && userRole === "admin" ? (
+              <AdminDashboard />
             ) : (
               <Navigate to="/login" replace />
             )
           }
+        />
+        <Route
+          path="/jobs"
+          element={
+            isLoggedIn && userRole === "admin" ? (
+              <JobPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* <Route
+          path="/registerJobStep1/:jobId"
+          element={isLoggedIn ? <JobApplicationForm /> : <Navigate to="/login" replace />}
         /> */}
       </Routes>
     </>

@@ -9,6 +9,7 @@ const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRole = require("../middleware/roleMiddleware");
 const {
   getAllRegisterJobs,
+  updateApplicationStatus,
 } = require("../../EmployeeRe/Controller/Employee.controller");
 
 const router = express.Router();
@@ -20,6 +21,13 @@ router.get(
   authenticateToken,
   authorizeRole(["admin"]),
   getAllRegisterJobs
+);
+
+router.put(
+  "/updateStatusUsers/:id", // ✅ เพิ่ม :id เข้าไป
+  authenticateToken,
+  authorizeRole(["admin"]),
+  updateApplicationStatus
 );
 
 router.put(

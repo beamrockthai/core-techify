@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UploadBoxFrom from "../components/UploadBoxFrom";
 import InputFrom from "../components/InputFrom";
 import { registerJob } from "../api/registerJob";
 import { useParams, useNavigate } from "react-router-dom";
+import { getJobById } from "../api/jobApi";
 import Swal from "sweetalert2"; // ✅ ใช้ SweetAlert2 สำหรับ Popup
 
 function RegisterFromPage() {
   console.log("✅ RegisterFromPage rendering...");
+  const [jobTitle, setJobTitle] = useState("");
+
   const { jobId } = useParams();
   const navigate = useNavigate();
 
@@ -16,9 +19,31 @@ function RegisterFromPage() {
     return;
   }
 
+  useEffect(() => {
+    const fetchJobData = async () => {
+      try {
+        const jobData = await getJobById(jobId);
+        console.log("✅ ได้รับข้อมูลตำแหน่งงาน:", jobData);
+
+        if (jobData) {
+          setJobTitle(jobData.JobName); // ✅ ใช้ค่า `JobName`
+          console.log("📌 ตั้งค่า jobTitle:", jobData.JobName);
+        } else {
+          setJobTitle("ไม่พบข้อมูลตำแหน่งงาน");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching job:", error);
+        setJobTitle("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      }
+    };
+
+    if (jobId) fetchJobData();
+  }, [jobId]);
+
   // ✅ State สำหรับข้อมูลส่วนบุคคล
   const [personalData, setPersonalData] = useState({});
   const handleInputChange = (newData) => {
+    console.log("📌 กำลังอัปเดตข้อมูลจาก InputForm:", newData);
     setPersonalData((prevData) => ({ ...prevData, ...newData }));
   };
 
@@ -37,6 +62,8 @@ function RegisterFromPage() {
 
   // ✅ ฟังก์ชันส่งฟอร์มไปยัง API พร้อม Popup แจ้งเตือน
   const handleSubmit = async () => {
+    console.log("📌 FormData ที่จะส่งไป Backend:", personalData);
+
     // ✅ แสดง Popup ยืนยันก่อนสมัคร
     const confirmResult = await Swal.fire({
       title: "ยืนยันการสมัคร?",
@@ -106,31 +133,43 @@ function RegisterFromPage() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gradient-to-b from-yellow-50 to-yellow-200">
-      <div className="container mx-auto p-4 flex-grow">
-        <div className="flex flex-col space-y-4 max-w-lg mx-auto">
+    <div className="w-full min-h-screen flex flex-col bg-gradient-to-b from-white via-purple-200 to-white ">
+      <div className="container mx-auto p-6 flex-grow">
+        <h2 className="text-xl font-bold text-purple-700">
+          ตำแหน่งที่ท่านต้องการสมัคร
+        </h2>
+        <h1 className="text-3xl font-bold text-black my-2 mb-10">
+          {jobTitle || "กำลังโหลด..."}
+        </h1>
+
+        <h2 className="text-xl font-bold text-gray-800 mb-5">
+          หลักฐานประกอบการสมัคร
+        </h2>
+
+        <div className="max-w-3xl ml-0 space-y-5 pl-5">
           <UploadBoxFrom
             label="๑. รูปถ่ายขนาด ๑ นิ้ว"
             onFileSelect={setProfileImage}
           />
           <UploadBoxFrom
-            label="๒. สำเนาบัตรประชาชน"
+            label="๒. สำเนาบัตรประจำตัวประชาชน จำนวน ๑ ฉบับ"
             onFileSelect={setIdCardImage}
           />
           <UploadBoxFrom
-            label="๓. สำเนาทะเบียนบ้าน"
+            label="๓. สำเนาสำเนาทะเบียนบ้าน จำนวน ๑ ฉบับ"
             onFileSelect={setHouseRegistrationImage}
           />
           <UploadBoxFrom
-            label="๔. สำเนาวุฒิการศึกษา"
+            label="๔. สำเนาวุฒิการศึกษาหรือหนังสือรับรองหรือระเบียนแสดงการเรียนจำนวน ๑ ชุดภาษาไทย"
             onFileSelect={setDegreeCertificateImage}
           />
           <UploadBoxFrom
-            label="๕. ใบ Transcript"
+            label="๕. Transcript"
             onFileSelect={setTranscriptImage}
           />
           <UploadBoxFrom
-            label="๖. ใบรับรองการทำงาน"
+            label="๖. สำเนาเอกสารที่แสดงว่าเป็นผู้ผ่านเกณฑ์ทหาร (กรณีเพศชาย)ได้แก่หนังสือสำคัญแบบ สด.๘  หรือใบสำคัญ แบบ สด.๙ หรือใบรับรองผ่านการตรวจเลือกทหารกองเกินเข้ารับราชการทหาร
+กองประจำการ จำนวน ๑ ฉบับ"
             onFileSelect={setWorkCertificateImage}
           />
           <UploadBoxFrom
@@ -152,9 +191,13 @@ function RegisterFromPage() {
           />
         </div>
 
-        <hr className="border-t-2 border-gray-300 my-8" />
+        <hr className="border-t-100 border-gray-300 my-20" />
 
-        <div className="mb-6">
+        <h1 className="text-3xl font-bold text-black my-2 mb-0">
+          กรุณากรอกข้อมูลส่วนตัว
+        </h1>
+
+        <div className="mb-3">
           <InputFrom onInputChange={handleInputChange} />
         </div>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion"; // ✅ Import Framer Motion
 import not1 from "../assets/1A.png";
 import not2 from "../assets/2B.png";
 import not3 from "../assets/3C.png";
@@ -12,7 +13,8 @@ const Ifcomponents = () => {
       id: 1,
       title: "1.เข้าสู่ระบบ/สมัครสมาชิก",
       src: not3,
-      description: "เข้าสู่ระบบด้วยบัญชีที่มีอยู่ หรือสมัครสมาชิกใหม่เพื่อเริ่มการสมัคร",
+      description:
+        "เข้าสู่ระบบด้วยบัญชีที่มีอยู่ หรือสมัครสมาชิกใหม่เพื่อเริ่มการสมัคร",
     },
     {
       id: 2,
@@ -42,39 +44,61 @@ const Ifcomponents = () => {
       id: 6,
       title: "6.ดาวน์โหลดแบบฟอร์มเอกสาร",
       src: not1,
-      description: "ดาวน์โหลดแบบฟอร์มเอกสารในรูปแบบ PDF เพื่อใช้ปริ้นในการสมัครงาน",
+      description:
+        "ดาวน์โหลดแบบฟอร์มเอกสารในรูปแบบ PDF เพื่อใช้ปริ้นในการสมัครงาน",
     },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      {/* ✅ หัวข้อหลัก พร้อมเพิ่มระยะห่าง */}
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-12">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }} // ✅ Fade-in เมื่อโหลดหน้า
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="container mx-auto px-4 py-12"
+    >
+      {/* ✅ หัวข้อหลัก */}
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-3xl font-bold text-center text-gray-800 mb-12"
+      >
         เงื่อนไขในการสมัคร
-      </h1>
+      </motion.h1>
 
-      {/* ✅ Grid Layout เพิ่มระยะห่างแนวตั้ง (gap-y-10) */}
+      {/* ✅ Grid Layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10">
-        {cards.map((card) => (
-          <div
+        {cards.map((card, index) => (
+          <motion.div
             key={card.id}
+            initial={{ opacity: 0, y: 30 }} // ✅ Effect ทีละอัน
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.15 }}
+            whileHover={{ scale: 1.05 }} // ✅ ขยายขึ้นเล็กน้อยเมื่อ hover
             className="card bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center space-y-4"
           >
-            {/* ✅ รูปภาพตรงกลาง และเพิ่ม margin-bottom */}
+            {/* ✅ รูปภาพ */}
             <figure className="flex justify-center mb-4">
-              <img src={card.src} alt={card.title} className="w-24 h-24 object-contain" />
+              <motion.img
+                src={card.src}
+                alt={card.title}
+                className="w-24 h-24 object-contain"
+                whileHover={{ scale: 1.1 }} // ✅ ขยายรูปเล็กน้อยเมื่อ hover
+                transition={{ duration: 0.3 }}
+              />
             </figure>
 
+            {/* ✅ เนื้อหา */}
             <div className="card-body w-full">
-              {/* ✅ Title อยู่ตรงกลาง 100% */}
-              <h2 className="card-title text-lg font-semibold text-center">{card.title}</h2>
-              {/* ✅ Description ชิดซ้าย */}
+              <h2 className="card-title text-lg font-semibold text-center">
+                {card.title}
+              </h2>
               <p className="text-gray-600 text-left">{card.description}</p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion"; // ✅ ใช้ Framer Motion
 import Logo from "../assets/LogoNew.png";
 
 const NavbarMain = ({ handleLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData && userData !== "undefined") {
+      try {
+        setUserRole(JSON.parse(userData).role);
+      } catch (error) {
+        console.error("❌ Error parsing userData:", error);
+        setUserRole(null);
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -84,15 +97,31 @@ const NavbarMain = ({ handleLogout }) => {
                         ประวัติการสมัคร
                       </Link>
                     </li>
-                    <li>
-                      <Link
-                        to="/jobs"
-                        className="block px-4 py-2 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        ประกาศงาน
-                      </Link>
-                    </li>
+
+                    {/* เมนูของ Admin  */}
+                    {userRole === "admin" && (
+                      <>
+                        <li>
+                          <Link
+                            to="/jobs"
+                            className="block px-4 py-2 hover:bg-gray-100"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            ประกาศงานเเอดมิน
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/adminHis"
+                            className="block px-4 py-2 hover:bg-gray-100"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            รายการสมัครงานของผู้ใช้
+                          </Link>
+                        </li>
+                      </>
+                    )}
+
                     <li>
                       <button
                         className="w-full text-left text-red-500 bg-gray-100 px-4 py-2 rounded-md"

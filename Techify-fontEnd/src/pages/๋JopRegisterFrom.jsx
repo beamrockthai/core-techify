@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"; // ✅ ใช้ navigate
 import UploadBoxFrom from "../components/UploadBoxFrom";
 import InputFrom from "../components/InputFrom";
 import { registerJob } from "../api/registerJob"; // ✅ นำเข้า API
+// import { getJobById } from "../api/jobApi";
 
 function RegisterFromPage() {
   console.log("✅ RegisterFromPage rendering...");

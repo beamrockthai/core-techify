@@ -1,11 +1,7 @@
-// ~/src/components/UploadBox.jsx
 import React, { useRef, useState } from "react";
-import { AiOutlineCloudUpload } from "react-icons/ai";
 
 function UploadBoxFrom({ label, onFileSelect }) {
   const fileInputRef = useRef(null);
-
-  // ✅ เก็บรูป previewURL ใน state ภายใน UploadBox เอง
   const [previewURL, setPreviewURL] = useState(null);
 
   const handleBoxClick = () => {
@@ -22,61 +18,47 @@ function UploadBoxFrom({ label, onFileSelect }) {
         return;
       }
 
-      // สร้าง URL สำหรับ preview ในกล่องนี้เอง
+      // สร้าง URL สำหรับ preview
       const tempPreview = URL.createObjectURL(file);
       setPreviewURL(tempPreview);
 
-      // ถ้าจำเป็นต้องให้หน้าพ่อแม่รู้ไฟล์ก็ยังส่งได้
+      // ส่งข้อมูลไฟล์ไปยังฟังก์ชันหลัก
       onFileSelect?.({ file, previewURL: tempPreview });
     }
   };
 
   return (
-    <div className="form-control w-full max-w-2xl mx-auto py-4 px-4">
-      {/* Label */}
-      <label className="label">
-        <span className="label-text text-base font-semibold">{label}</span>
-      </label>
-
-      {/* กล่องอัปโหลด */}
-      <div
-        className="
-          flex flex-col items-center justify-center
-          border-2 border-dashed border-gray-300 rounded-lg
-          py-6 px-4
-          text-center
-          cursor-pointer
-          hover:border-gray-400
-          transition
-          bg-white
-        "
+    <div className="flex items-center gap-x-6 w-full max-w-3xl mx-auto">
+      {/* ปุ่มเลือกไฟล์ (ขนาดให้ตรงกับภาพ) */}
+      <button
+        className="btn btn-outline btn-primary w-20 h-10 flex items-center justify-center text-md"
         onClick={handleBoxClick}
       >
-        <AiOutlineCloudUpload className="text-5xl text-gray-400 mb-3" />
+        เลือก
+      </button>
 
-        <p className="text-blue-600 underline mb-1">อัปโหลดรูปภาพ</p>
-        <p className="text-sm text-gray-500">PNG, JPG, GIF up to 5MB</p>
+      {/* Label และ Preview */}
+      <div className="flex items-center w-full">
+        <span className="text-lg text-gray-700">{label}</span>
 
-        {/* input type file */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/png, image/jpeg, image/gif"
-        />
-
-        {/* ✅ แสดง preview ในกล่องเดียวกันเลย */}
+        {/* Preview ภาพถ้ามี */}
         {previewURL && (
-          <div className="mt-4">
-            <img
-              src={previewURL}
-              alt="Preview"
-              className="max-w-xs h-auto border border-gray-300 rounded-md"
-            />
-          </div>
+          <img
+            src={previewURL}
+            alt="Preview"
+            className="w-14 h-14 border border-gray-300 rounded-md object-cover ml-4"
+          />
         )}
       </div>
+
+      {/* Input File ซ่อนอยู่ */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        onChange={handleFileChange}
+        accept="image/png, image/jpeg, image/gif"
+      />
     </div>
   );
 }

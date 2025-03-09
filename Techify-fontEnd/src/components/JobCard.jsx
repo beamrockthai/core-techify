@@ -11,24 +11,23 @@ const JobCard = ({ job }) => {
 
   // ฟังก์ชันกดปุ่มดูรายละเอียด
   const handleDetailsClick = () => {
-    navigate(`/jobDetail/${job.id}`);
+    navigate(`/DetailPage/${job.id}`);
   };
 
   return (
     <div className="card shadow-md rounded-xl p-4 w-full h-[350px] flex flex-col bg-gradient-to-b from-white to-purple-300 relative">
-     {/* ✅ สถานะการสมัคร (มุมขวาบน) */}
-  <div className="absolute top-2 right-2">
-    <span
-      className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md transition ${
-        job.IsActive 
-          ? "bg-green-500 text-white animate-pulse hover:bg-green-600" 
-          : "bg-red-500 text-white hover:bg-red-600"
-        }`}
-    >
-      {job.IsActive ? "เปิดรับสมัคร" : "ปิดรับสมัคร"}
-    </span>
-  </div>
-
+      {/* ✅ สถานะการสมัคร (มุมขวาบน) */}
+      <div className="absolute top-2 right-2">
+        <span
+          className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md transition ${
+            job.IsActive
+              ? "bg-green-500 text-white animate-pulse hover:bg-green-600"
+              : "bg-red-500 text-white hover:bg-red-600"
+          }`}
+        >
+          {job.IsActive ? "เปิดรับสมัคร" : "ปิดรับสมัคร"}
+        </span>
+      </div>
 
       <div className="flex-1 overflow-hidden">
         {/* Job Title */}

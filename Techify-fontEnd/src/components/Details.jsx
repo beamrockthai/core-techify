@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // ✅ เพิ่ม useNavigate
-import { getJobById } from "../api/jobApi"; 
-
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // ✅ Import Framer Motion
+import { getJobById } from "../api/jobApi";
 
 const JobDetail = () => {
-  const { jobId } = useParams(); // ✅ ใช้ jobId ตาม Route
-  const navigate = useNavigate(); // ✅ ใช้ navigate() เพื่อนำทาง
+  const { jobId } = useParams();
+  const navigate = useNavigate();
   const [job, setJob] = useState(null);
   const [error, setError] = useState(null);
 
@@ -43,41 +43,67 @@ const JobDetail = () => {
   }
 
   if (!job) {
-    return <div className="text-center text-gray-500">⏳ กำลังโหลดข้อมูลตำแหน่งงาน...</div>;
+    return (
+      <div className="text-center text-gray-500">
+        ⏳ กำลังโหลดข้อมูลตำแหน่งงาน...
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-6 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div className="bg-gradient-to-b from-white to-purple-100 p-6 rounded-lg shadow-lg">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }} // ✅ Fade-in ทั้งหน้า
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="container mx-auto px-4 sm:px-6 lg:px-8 py-10"
+    >
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[40%_60%] gap-6 md:gap-10">
+        {/* ✅ ส่วนซ้าย (40%) */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }} // ✅ Slide-in จากซ้าย
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="bg-gradient-to-b from-white to-purple-100 p-6 rounded-lg shadow-lg"
+        >
           <h1 className="text-2xl font-bold text-black">{job.JobName}</h1>
-          
+
           <p className="text-gray-600 mt-2 flex items-center">
             📍 <strong className="ml-1">ที่ตั้ง</strong> {job.Location}
           </p>
-          
-          {/* ✅ ปุ่มสมัครงาน นำทางไป /ifpage/:jobId */}
-          <button
-            className="btn btn-outline btn-primary mt-4 w-full"
-            onClick={() => navigate(`/ifpage/${jobId}`)}
-          >
-            สมัครงาน
-          </button>
 
-          {/* ✅ ปุ่มย้อนกลับ กลับไปหน้าก่อน หรือไป /jobs */}
-          <button
-            className="btn btn-outline btn-secondary mt-4 w-full"
-            onClick={() => navigate(-1)} // ✅ กลับไปหน้าก่อนหน้า
-          >
-            🔙 ย้อนกลับ
-          </button>
-        </div>
+          {/* ✅ ปุ่มสมัครงาน & ย้อนกลับ */}
+          <div className="flex flex-col gap-4 mt-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }} // ✅ Hover effect
+              className="btn btn-outline btn-primary w-full"
+              onClick={() => navigate(`/ifpage/${jobId}`)}
+            >
+              สมัครงาน
+            </motion.button>
 
-        <div className="bg-gradient-to-b from-white to-purple-100 p-6 rounded-lg shadow-lg">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="btn btn-outline btn-secondary w-full"
+              onClick={() => navigate(-1)}
+            >
+              🔙 ย้อนกลับ
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* ✅ ส่วนขวา (60%) */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }} // ✅ Slide-in จากขวา
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="bg-gradient-to-b from-white to-purple-100 p-6 rounded-lg shadow-lg"
+        >
           <h2 className="text-xl font-bold text-purple-700">รายละเอียดงาน</h2>
 
           <div className="mt-4">
-            <h3 className="text-md font-bold text-purple-700">หน้าที่ความรับผิดชอบ</h3>
+            <h3 className="text-md font-bold text-purple-700">
+              หน้าที่ความรับผิดชอบ
+            </h3>
             <p className="text-gray-700 mt-2">{job.Description}</p>
           </div>
 
@@ -90,7 +116,9 @@ const JobDetail = () => {
 
           {job.Period && (
             <div className="mt-4">
-              <h3 className="text-md font-bold text-purple-700">ระยะเวลาการจ้าง</h3>
+              <h3 className="text-md font-bold text-purple-700">
+                ระยะเวลาการจ้าง
+              </h3>
               <p className="text-gray-700 mt-2">{job.Period}</p>
             </div>
           )}
@@ -101,10 +129,9 @@ const JobDetail = () => {
               <p className="text-gray-700 mt-2">{job.Ror}</p>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
-      
-    </div>
+    </motion.div>
   );
 };
 

@@ -99,12 +99,12 @@ export default function Profile() {
     <div className="bg-gradient-to-br from-blue-200 via-purple-200 to-yellow-200 min-h-screen flex items-center justify-center p-6">
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6 md:p-10 relative">
         {/* ปุ่มแก้ไขมุมขวาบน */}
-        <button
+        {/* <button
           className="absolute top-4 right-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           onClick={() => setIsEditing(!isEditing)}
         >
           {isEditing ? "ยกเลิก" : "แก้ไข"}
-        </button>
+        </button> */}
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-center md:flex-row md:items-start">

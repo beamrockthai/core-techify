@@ -22,6 +22,7 @@ const User = require("./src/User/Routes/user.routes");
 const JwtAuth = require("./src/User/Routes/jwt.routes");
 const Admin = require("./src/User/Routes/admin.routes");
 const EmployeeRoutes = require("./src/EmployeeRe/Routes/Employee.routes");
+const pdfRoutes = require("./src/ExportPdf/Routes/ pdf.routes");
 
 const path = require("path");
 
@@ -73,5 +74,11 @@ app.use("/api/admin", Admin);
 
 // LINE Login Routes
 app.use(authRoutes);
+
+// Export PDF
+app.use("/api/pdf", pdfRoutes);
+
+// Image
+app.use(express.static("public"));
 
 module.exports = app;

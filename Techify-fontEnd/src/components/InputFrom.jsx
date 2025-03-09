@@ -1,41 +1,68 @@
 import React, { useState, useEffect } from "react";
 import * as getUserProfile from "../api/userApi"; // ✅ ดึงข้อมูลผู้ใช้จาก API
+import AddressSelector from "./AddressSelector";
 
 const InputForm = ({ onInputChange }) => {
-  console.log("✅ InputForm component is rendering...");
-
-  // ✅ ดึงข้อมูลผู้ใช้จาก API และเติมค่าในฟอร์ม
+  // ✅ สร้าง state สำหรับแบบฟอร์ม
   const [formData, setFormData] = useState({
-    additionalPersonalInfo: {
-      gender: "",
-      bloodType: "",
-      height: "",
-      weight: "",
-      ethnicity: "",
-      religion: "",
-    },
-    currentAddress: {
-      houseNumber: "",
-      village: "",
-      street: "",
-      subDistrict: "",
-      district: "",
-      province: "",
-      postalCode: "",
-      phoneNumber: "",
-    },
-    emergencyContact: {
-      fullName: "",
-      phoneNumber: "",
-      houseNumber: "",
-      village: "",
-      street: "",
-      subDistrict: "",
-      district: "",
-      province: "",
-    },
-    educationHistory: "",
-    workHistory: [],
+    firstName: "",
+    lastName: "",
+    birhDate: "",
+    age: "",
+    month: "",
+    nationality: "",
+    ethnicity: "",
+    religion: "",
+    placeOfBirth: "",
+    maritalStatus: "",
+
+    // ที่อยู่ปัจจุบัน
+    houseNumber: "",
+    village: "",
+    subdistrict: "",
+    district: "",
+    province: "",
+    postalCode: "",
+    phoneNumber: "",
+
+    // ข้อมูลบิดา
+    firstNameDad: "",
+    lastNameDad: "",
+    nationalityDad: "",
+    occupationDad: "",
+
+    // ข้อมูลมารดา
+    firstNameMother: "",
+    lastNameMother: "",
+    nationalityMother: "",
+    occupationMother: "",
+
+    // ผู้ติดต่อฉุกเฉิน
+    firstNameEmergency: "",
+    lastNameEmergency: "",
+    phoneNumberEmergency: "",
+    houseNumberEmergency: "",
+    villageEmergency: "",
+    alleyRoad: "",
+    subdistrictEmergency: "",
+    districtEmergency: "",
+    provinceEmergency: "",
+
+    // ประวัติการศึกษา
+    degreeEarned: "",
+    major: "",
+    gpa: "",
+    institutionName: "",
+    periodofStudy: "",
+
+    // ประวัติการทำงาน
+    workPlace: "",
+    position: "",
+    lastSalary: "",
+    employmentDuration: "",
+    reason: "",
+
+    // ทักษะพิเศษ
     specialSkills: "",
   });
 
@@ -43,42 +70,10 @@ const InputForm = ({ onInputChange }) => {
     const fetchUserData = async () => {
       try {
         const userData = await getUserProfile();
-        console.log("📌 User Data from API:", userData);
-
-        // ✅ เติมค่าที่มีอยู่จาก Database ลงใน Form
-        setFormData({
-          additionalPersonalInfo: userData?.additionalPersonalInfo || {
-            gender: "",
-            bloodType: "",
-            height: "",
-            weight: "",
-            ethnicity: "",
-            religion: "",
-          },
-          currentAddress: userData?.currentAddress || {
-            houseNumber: "",
-            village: "",
-            street: "",
-            subDistrict: "",
-            district: "",
-            province: "",
-            postalCode: "",
-            phoneNumber: "",
-          },
-          emergencyContact: userData?.emergencyContact || {
-            fullName: "",
-            phoneNumber: "",
-            houseNumber: "",
-            village: "",
-            street: "",
-            subDistrict: "",
-            district: "",
-            province: "",
-          },
-          educationHistory: userData?.educationHistory || "",
-          workHistory: userData?.workHistory || [],
-          specialSkills: userData?.specialSkills || "",
-        });
+        setFormData((prev) => ({
+          ...prev,
+          ...userData,
+        }));
       } catch (error) {
         console.error("❌ Error fetching user data:", error);
       }
@@ -87,81 +82,124 @@ const InputForm = ({ onInputChange }) => {
     fetchUserData();
   }, []);
 
-  // ✅ ฟังก์ชันอัปเดตค่าใน State
   const handleChange = (e) => {
     const { id, value } = e.target;
-    const keys = id.split(".");
 
     setFormData((prev) => {
-      let updatedFormData;
-      if (keys.length > 1) {
-        updatedFormData = {
-          ...prev,
-          [keys[0]]: {
-            ...prev[keys[0]],
-            [keys[1]]: value,
-          },
-        };
-      } else {
-        updatedFormData = {
-          ...prev,
-          [id]: value,
-        };
-      }
+      const updatedFormData = { ...prev, [id]: value };
 
-      console.log("🟢 Updated FormData:", updatedFormData);
-      onInputChange(updatedFormData); // ✅ ส่งข้อมูลไปยัง `RegisterFromPage`
+      console.log("🟢 ข้อมูลที่อัปเดตใน InputForm:", updatedFormData);
+
+      // ✅ ส่งข้อมูลกลับไปยัง RegisterFromPage
+      onInputChange(updatedFormData);
+
       return updatedFormData;
     });
   };
 
+  const handleAddressChange = (address) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...address, // ✅ อัปเดตค่า จังหวัด, อำเภอ, ตำบล
+    }));
+    onInputChange({
+      ...formData,
+      ...address,
+    });
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="bg-white shadow-lg rounded-lg p-6 space-y-6">
-        {/* ✅ ข้อมูลเพิ่มเติม */}
-        <div className="bg-gray-100 p-4 rounded-md">
-          <h3 className="text-lg font-semibold">ข้อมูลเพิ่มเติม</h3>
-          <div className="grid grid-cols-2 gap-4">
+    <div className="max-w-20xl mx-auto px-5 py-10">
+      <div className=" rounded-lg p-6 space-y-6 ">
+        {/* ✅ ข้อมูลส่วนตัว */}
+        <div className="bg-white-100 p-4 rounded-md">
+          <h1 className="text-lg font-semibold">ข้อมูลส่วนตัว</h1>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              "gender",
-              "bloodType",
-              "height",
-              "weight",
-              "ethnicity",
-              "religion",
+              { id: "firstName", label: "ชื่อ" },
+              { id: "lastName", label: "นามสกุล" },
+              { id: "birhDate", label: "วันเดือนปีเกิด" },
+              { id: "age", label: "อายุ" },
+              { id: "month", label: "เดือน" },
+              { id: "nationality", label: "สัญชาติ" },
+              { id: "ethnicity", label: "เชื้อชาติ" },
+              { id: "religion", label: "ศาสนา" },
+              { id: "placeOfBirth", label: "สถานที่เกิด" },
             ].map((field) => (
-              <div key={field} className="form-control">
-                <label className="label">{field}</label>
-                <input
-                  id={`additionalPersonalInfo.${field}`}
-                  value={formData.additionalPersonalInfo[field]}
-                  onChange={handleChange}
-                  className="input input-bordered w-full"
-                />
-              </div>
+              <input
+                key={field.id}
+                id={field.id}
+                placeholder={field.label}
+                value={formData[field.id]}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
             ))}
           </div>
         </div>
 
         {/* ✅ ที่อยู่ปัจจุบัน */}
-        <div className="bg-gray-100 p-4 rounded-md">
+        <div className="bg-white-100 p-4 rounded-md">
           <h3 className="text-lg font-semibold">ที่อยู่ปัจจุบัน</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {/* ✅ บ้านเลขที่ & หมู่ที่ */}
+            <input
+              id="houseNumber"
+              placeholder="บ้านเลขที่"
+              value={formData.houseNumber}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+            />
+            <input
+              id="village"
+              placeholder="หมู่ที่"
+              value={formData.village}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+            />
+
+            {/* ✅ ใช้ AddressSelector สำหรับเลือก จังหวัด → อำเภอ → ตำบล */}
+            <div className="col-span-2 md:col-span-3">
+              <AddressSelector onAddressChange={handleAddressChange} />
+            </div>
+
+            {/* ✅ รหัสไปรษณีย์ & เบอร์โทรศัพท์ */}
+            <input
+              id="postalCode"
+              placeholder="รหัสไปรษณีย์"
+              value={formData.postalCode}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+            />
+            <input
+              id="phoneNumber"
+              placeholder="เบอร์โทรศัพท์"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              className="input input-bordered w-full"
+            />
+          </div>
+        </div>
+
+        {/* ✅ ข้อมูลบิดา มารดา */}
+        <div className="bg-white-100 p-4 rounded-md">
+          <h3 className="text-lg font-semibold">ข้อมูลบิดา-มารดา</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "houseNumber",
-              "village",
-              "street",
-              "subDistrict",
-              "district",
-              "province",
-              "postalCode",
-              "phoneNumber",
+              { id: "firstNameDad", label: "ชื่อบิดา" },
+              { id: "lastNameDad", label: "นามสกุล" },
+              { id: "nationalityDad", label: "สัญชาติ" },
+              { id: "occupationDad", label: "อาชีพ" },
+              { id: "firstNameMother", label: "ชื่อมารดา" },
+              { id: "lastNameMother", label: "นามสกุล" },
+              { id: "nationalityMother", label: "สัญชาติ" },
+              { id: "occupationMother", label: "อาชีพ" },
             ].map((field) => (
               <input
-                key={field}
-                id={`currentAddress.${field}`}
-                placeholder={field}
-                value={formData.currentAddress[field]}
+                key={field.id}
+                id={field.id}
+                placeholder={field.label}
+                value={formData[field.id]}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -169,59 +207,98 @@ const InputForm = ({ onInputChange }) => {
           </div>
         </div>
 
-        {/* ✅ ผู้ติดต่อฉุกเฉิน */}
-        <div className="bg-gray-100 p-4 rounded-md">
-          <h3 className="text-lg font-semibold">ที่อยู่กรณีฉุกเฉิน</h3>
-          <div className="grid grid-cols-2 gap-4">
+        {/* ✅ ที่อยู่ฉุกเฉิน */}
+        <div className="bg-white-100 p-4 rounded-md">
+          <h3 className="text-lg font-semibold">ในกรณีเร่งด่วนติดต่อได้ที่</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              "fullName",
-              "phoneNumber",
-              "houseNumber",
-              "village",
-              "street",
-              "subDistrict",
-              "district",
-              "province",
+              { id: "firstNameEmergency", label: "ชื่อ" },
+              { id: "lastNameEmergency", label: "นามสกุล" },
+              { id: "phoneNumberEmergency", label: "เบอร์โทรศัพท์" },
+              { id: "houseNumberEmergency", label: "บ้านเลขที่" },
+              { id: "villageEmergency", label: "หมู่ที่" },
+              { id: "alleyRoad", label: "ซอย/ถนน" },
+              { id: "subdistrictEmergency", label: "ตำบล" },
+              { id: "districtEmergency", label: "อำเภอ" },
+              { id: "provinceEmergency", label: "จังหวัด" },
             ].map((field) => (
               <input
-                key={field}
-                id={`emergencyContact.${field}`}
-                placeholder={field}
-                value={formData.emergencyContact[field]}
+                key={field.id}
+                id={field.id}
+                placeholder={field.label}
+                value={formData[field.id]}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
             ))}
           </div>
+        </div>
+
+        {/* ✅ สถานะสมรส */}
+        <div className="bg-white-100 p-4 rounded-md">
+          <h3 className="text-lg font-semibold">สถานะสมรส</h3>
+          <select
+            id="maritalStatus"
+            value={formData.maritalStatus}
+            onChange={handleChange}
+            className="select select-bordered w-full"
+          >
+            <option value="">เลือกสถานะ</option>
+            <option value="โสด">โสด</option>
+            <option value="สมรส">สมรส</option>
+            <option value="หย่าร้าง">หย่าร้าง</option>
+            <option value="หม้าย">หม้าย</option>
+          </select>
         </div>
 
         {/* ✅ ประวัติการศึกษา */}
-        <div className="form-control">
-          <label className="label">ประวัติการศึกษา</label>
-          <textarea
-            id="educationHistory"
-            value={formData.educationHistory}
-            onChange={handleChange}
-            className="textarea textarea-bordered w-full h-24"
-          ></textarea>
+        <div className="bg-white-100 p-4 rounded-md">
+          <h3 className="text-lg font-semibold">ประวัติการศึกษา</h3>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { id: "degreeEarned", label: "วุฒิการศึกษา" },
+              { id: "major", label: "สาขาวิชาเอก" },
+              { id: "gpa", label: "คะแนนเฉลี่ย" },
+              { id: "institutionName", label: "ชื่อสถานศึกษา" },
+              { id: "periodofStudy", label: "ระยะเวลาที่ศึกษา" },
+            ].map((field) => (
+              <input
+                key={field.id}
+                id={field.id}
+                placeholder={field.label}
+                value={formData[field.id]}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+            ))}
+          </div>
         </div>
 
         {/* ✅ ประวัติการทำงาน */}
-        <div className="bg-gray-100 p-4 rounded-md">
+        <div className="bg-white-100 p-4 rounded-md">
           <h3 className="text-lg font-semibold">ประวัติการทำงาน</h3>
-          {formData.workHistory.length > 0 ? (
-            formData.workHistory.map((job, index) => (
-              <p key={index}>
-                🔹 {job.companyName} - {job.position}
-              </p>
-            ))
-          ) : (
-            <p>ยังไม่ได้ระบุ</p>
-          )}
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { id: "workPlace", label: "สถานที่ทำงาน" },
+              { id: "position", label: "ตำแหน่ง" },
+              { id: "lastSalary", label: "เงินเดือนสุดท้าย" },
+              { id: "employmentDuration", label: "ระยะเวลาการทำงาน" },
+              { id: "reason", label: "เหตุผลที่ออก" },
+            ].map((field) => (
+              <input
+                key={field.id}
+                id={field.id}
+                placeholder={field.label}
+                value={formData[field.id]}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+            ))}
+          </div>
         </div>
 
         {/* ✅ ทักษะพิเศษ */}
-        <div className="form-control">
+        <div className="form-control font-semibold">
           <label className="label">ทักษะพิเศษ</label>
           <textarea
             id="specialSkills"
@@ -234,5 +311,4 @@ const InputForm = ({ onInputChange }) => {
     </div>
   );
 };
-
 export default InputForm;

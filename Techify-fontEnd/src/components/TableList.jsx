@@ -136,8 +136,6 @@ export default function TableList({ handleOpen, tableData, setTableData }) {
                   {job.Ror}
                 </td>
 
-               
-
                 <td className="px-4 py-3">
                   <span
                     className={`px-3 py-1 text-xs font-medium rounded-full ${
