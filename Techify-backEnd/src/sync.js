@@ -16,4 +16,4 @@ const Employee = require("./EmployeeRe/Model/Employee.model");
 
 //ไว้สําหรับการทํา migration ของตาราง
 //sync.js ทําการรันไฟล์นี้เพื่อสร้างตารางใหม่ โดยใช้คําสั่ง node src/sync.js
-// await sequelize.sync({ alter: true }); ข้อมูลจะไม่หาย แต่ตารางจะถูกแก้ไขให้ตรงกับ Model ที่เราได้แก้ไขไว้1
+// await sequelize.sync({ alter: true }); ข้อมูลจะไม่หาย แต่ตารางจะถูกแก้ไขให้ตรงกับ Model ที่เราได้แก้ไขไว้1dd
