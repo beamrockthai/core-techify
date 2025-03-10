@@ -1,33 +1,42 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config(); // โหลดค่าจาก .env
 
-// ตรวจสอบว่าค่าจาก .env ถูกโหลดหรือไม่
-console.log("DB Config:");
-console.log("DB_NAME:", process.env.DB_NAME);
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_HOST:", process.env.DB_HOST);
-console.log("DB_PORT:", process.env.DB_PORT);
+let sequelize;
 
-// ตั้งค่า Sequelize instance
-const sequelize = new Sequelize(
-  process.env.DB_NAME || "postgres", // ชื่อฐานข้อมูล (default: postgres)
-  process.env.DB_USER || "postgres", // ชื่อผู้ใช้ (default: postgres)
-  process.env.DB_PASSWORD || "", // รหัสผ่าน (default: ไม่มี)
-  {
-    host: process.env.DB_HOST || "localhost",
-    port: Number(process.env.DB_PORT) || 5432, // แปลงเป็นตัวเลข, default: 5432
+// ถ้ามี `DATABASE_URL` ให้ใช้กับ Railway (Production)
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: "postgres",
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     logging: false, // ปิด log query
-  }
-);
+  });
+} else {
+  // ใช้ค่าที่ตั้งไว้ใน Local Development
+  sequelize = new Sequelize(
+    process.env.DB_NAME || "postgres",
+    process.env.DB_USER || "postgres",
+    process.env.DB_PASSWORD || "",
+    {
+      host: process.env.DB_HOST || "localhost",
+      port: Number(process.env.DB_PORT) || 5432,
+      dialect: "postgres",
+      logging: false,
+    }
+  );
+}
 
 // ทดสอบการเชื่อมต่อ
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ GoToGundum ");
+    console.log("✅ Database Connected!");
   } catch (error) {
-    console.error("❌ NoToGundum:", error.message);
+    console.error("❌ Database Connection Error:", error.message);
   }
 })();
 
