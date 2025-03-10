@@ -3,20 +3,20 @@ require("dotenv").config(); // โหลดค่าจาก .env
 
 let sequelize;
 
-// ถ้ามี `DATABASE_URL` ให้ใช้กับ Railway (Production)
+// ใช้ `DATABASE_URL` ถ้ามี (Production)
 if (process.env.DATABASE_URL) {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: "postgres",
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // รองรับ SSL ของ Railway
       },
     },
     logging: false, // ปิด log query
   });
 } else {
-  // ใช้ค่าที่ตั้งไว้ใน Local Development
+  // ใช้ Local PostgreSQL สำหรับเครื่องตัวเอง (ไม่ได้ใช้ใน Railway)
   sequelize = new Sequelize(
     process.env.DB_NAME || "postgres",
     process.env.DB_USER || "postgres",
