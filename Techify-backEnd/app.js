@@ -65,7 +65,7 @@ app.use("/api", auth);
 app.use("/api", Job);
 app.use("/api", User);
 
-//JwtAuthUser
+//JwtAuthUser1
 app.use("/api", JwtAuth);
 
 //JwtAuthAdmin

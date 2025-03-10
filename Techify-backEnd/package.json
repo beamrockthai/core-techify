@@ -2,7 +2,7 @@
   "name": "techify",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -28,12 +28,15 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "pretty-error": "^4.0.0",
-    "puppeteer": "^24.4.0",
+    "chromium": "^3.0.0",
     "puppeteer-core": "^24.4.0",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }

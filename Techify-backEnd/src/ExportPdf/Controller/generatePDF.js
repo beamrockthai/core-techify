@@ -1,3 +1,4 @@
+// const puppeteer = require("puppeteer-core");
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
 const path = require("path");
@@ -19,9 +20,16 @@ const generatePDF = async (data) => {
     // );
 
     const browser = await puppeteer.launch({
-      executablePath: "/usr/bin/google-chrome",
+      executablePath: process.env.CHROME_BIN || "/usr/bin/google-chrome", // ระบุ Chrome ที่ Render มีอยู่แล้ว
       headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-software-rasterizer",
+        "--disable-accelerated-2d-canvas",
+      ],
     });
 
     // console.log("✅ Puppeteer เปิด Browser สำเร็จ");

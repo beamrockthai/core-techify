@@ -18,7 +18,6 @@ process.on("unhandledRejection", (reason, promise) => {
 (async () => {
   try {
     await sequelize.sync(); // สร้างตารางในฐานข้อมูลถ้ายังไม่มี
-    console.log("Database synced");
 
     // เริ่มต้นเซิร์ฟเวอร์
     const PORT = process.env.APP_PORT || 3000;
@@ -31,7 +30,7 @@ process.on("unhandledRejection", (reason, promise) => {
 })();
 
 // ✅ Debug: แสดงเส้นทาง API ที่โหลดใน Express
-console.log("✅ Listing all registered routes:");
+// console.log("✅ Listing all registered routes:");
 app._router.stack.forEach((r) => {
   if (r.route && r.route.path) {
     console.log(`🔹 ${r.route.stack[0].method.toUpperCase()} ${r.route.path}`);
