@@ -70,7 +70,7 @@ exports.getMe = async (req, res) => {
   try {
     // ✅ ตรวจสอบว่ามี user หรือไม่
     if (!req.user) {
-      console.error("❌ Error: req.user is undefined");
+      // console.error("❌ Error: req.user is undefined");
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
@@ -130,7 +130,7 @@ exports.getMe = async (req, res) => {
 
     // ❌ ถ้าไม่เจอ User
     if (!user) {
-      console.error("❌ Error: User not found");
+      // console.error("❌ Error: User not found");
       return res
         .status(404)
         .json({ success: false, message: "User not found" });

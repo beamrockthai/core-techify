@@ -26,7 +26,7 @@ router.get(
       return res.status(401).json({ success: false, message: "Login failed" });
     }
 
-    console.log("🔹 req.user:", req.user); // เช็คค่าที่ได้จาก LINE
+    // console.log("🔹 req.user:", req.user); // เช็คค่าที่ได้จาก LINE
 
     // รับข้อมูลจาก LINE
     const userId = req.user.userId;

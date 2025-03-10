@@ -17,8 +17,8 @@ router.post(
   authenticateToken, // ✅ ตรวจสอบ Token
   uploadMiddleware, // ✅ อัปโหลดไฟล์
   (req, res, next) => {
-    console.log("✅ Route /register Called - Received request:", req.body);
-    console.log("✅ Received files:", req.files);
+    // console.log("✅ Route /register Called - Received request:", req.body);
+    // console.log("✅ Received files:", req.files);
 
     // ✅ ตรวจสอบว่า personalInfo มีค่าหรือไม่
     if (req.body.personalInfo) {

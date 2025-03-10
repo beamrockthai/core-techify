@@ -5,8 +5,8 @@ const User = require("../../User/Model/user.model"); // ✅ เพิ่ม impo
 // 🔹 สมัครงาน (เฉพาะคนที่ล็อกอิน)
 exports.registerForJob = async (req, res) => {
   try {
-    console.log("📌 Received request body:", req.body);
-    console.log("📌 Received files:", req.files);
+    // console.log("📌 Received request body:", req.body);
+    // console.log("📌 Received files:", req.files);
 
     if (!req.user || !req.user.id) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -36,7 +36,7 @@ exports.registerForJob = async (req, res) => {
         ? JSON.parse(req.body.personalInfo || "{}")
         : req.body.personalInfo || {};
 
-    console.log("✅ personalInfo หลังแปลง:", personalInfo);
+    // console.log("✅ personalInfo หลังแปลง:", personalInfo);
 
     // ✅ ฟังก์ชันช่วยแปลงค่าที่เป็นตัวเลข ป้องกัน NaN
     const parseInteger = (value) => {

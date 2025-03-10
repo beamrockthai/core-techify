@@ -10,13 +10,13 @@ const generatePDF = async (data) => {
     const uploadDir = path.resolve(__dirname, "../../../uploads");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
-      console.log("📂 โฟลเดอร์ uploads ถูกสร้างขึ้นแล้ว!");
+      // console.log("📂 โฟลเดอร์ uploads ถูกสร้างขึ้นแล้ว!");
     }
 
-    console.log(
-      "📌 กำลังเปิด Puppeteer โดยใช้ Chrome ที่:",
-      "/usr/bin/google-chrome"
-    );
+    // console.log(
+    //   "📌 กำลังเปิด Puppeteer โดยใช้ Chrome ที่:",
+    //   "/usr/bin/google-chrome"
+    // );
 
     const browser = await puppeteer.launch({
       executablePath: "/usr/bin/google-chrome",
@@ -24,7 +24,7 @@ const generatePDF = async (data) => {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
-    console.log("✅ Puppeteer เปิด Browser สำเร็จ");
+    // console.log("✅ Puppeteer เปิด Browser สำเร็จ");
     const page = await browser.newPage();
 
     // ✅ ตรวจสอบ URL ของรูปภาพ
@@ -253,7 +253,7 @@ const generatePDF = async (data) => {
 
     const pdfFileName = `resume-${Date.now()}.pdf`;
     const pdfPath = path.join(uploadDir, pdfFileName);
-    console.log("📌 กำลังบันทึก PDF ที่:", pdfPath);
+    // console.log("📌 กำลังบันทึก PDF ที่:", pdfPath);
 
     await page.pdf({ path: pdfPath, format: "A4", printBackground: true });
 
