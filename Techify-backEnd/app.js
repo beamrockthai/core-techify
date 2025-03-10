@@ -34,10 +34,17 @@ const authRoutes = require("./src/User/Routes/jwt.routes"); // Import LINE Auth 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//
+
 // Middleware
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));
+
+// เพิ่ม route สำหรับ '/':
+app.get("/", (req, res) => {
+  res.send("Welcome to the Backend!"); // หรือใช้ HTML หรือ JSON ได้
+});
 
 // ใช้ express-session สำหรับ OAuth
 app.use(
