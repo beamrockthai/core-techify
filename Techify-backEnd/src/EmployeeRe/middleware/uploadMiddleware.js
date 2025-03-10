@@ -38,5 +38,5 @@ module.exports = upload.fields([
   { name: "criminalRecordImage", maxCount: 1 },
   { name: "passportImage", maxCount: 1 },
   { name: "drivingLicenseImage", maxCount: 1 },
-  { name: "attachedFiles", maxCount: 10 }, // รองรับหลายไฟล์
+  { name: "attachedFiles", maxCount: 10 }, // รองรับหลายไฟล์d
 ]);
