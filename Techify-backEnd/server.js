@@ -4,7 +4,32 @@ const sequelize = require("./src/Config/db"); // Import Sequelize instance
 const PrettyError = require("pretty-error"); // ทําให้ error ใน log อ่านง่ายขึ้น
 const debug = require("debug")("app:routes");
 
+const session = require("express-session");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
 const pe = new PrettyError();
+
+// 🔹 **ตั้งค่า Session Store บน PostgreSQL**
+const sessionStore = new SequelizeStore({
+  db: sequelize,
+});
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your_secret_key",
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true, // ใช้ HTTPS เท่านั้น
+      httpOnly: true, // ป้องกัน XSS
+      maxAge: 24 * 60 * 60 * 1000, // 1 วัน
+    },
+  })
+);
+
+// 🔹 **ซิงค์ Session Store กับฐานข้อมูล**
+sessionStore.sync();
 
 // ใช้ PrettyError เพื่อ render error
 process.on("unhandledRejection", (reason, promise) => {
