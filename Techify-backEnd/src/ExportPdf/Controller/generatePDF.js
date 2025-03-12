@@ -60,16 +60,10 @@ const generatePDF = async (data) => {
           .document-image { width: 120px; height: 120px; display: block; margin: 5px auto; border: 1px solid black; }
           .page-break { page-break-before: always; }
           .signature { text-align: center; margin-top: 50px; font-weight: bold; }
-          .committee { display: flex; justify-content: space-between; margin-top: 20px;}
-          .logo { width: 150px; height: auto;}
- 
-  
-
-          
+          .committee { display: flex; justify-content: space-between; margin-top: 20px;}   
         </style>
       </head>
       <body>
-
         <!-- ✅ หน้าแรก1 -->
         <div class="container">
            <img src="${logoURL}" class="logo" alt="โลโก้หน่วยงาน">
@@ -92,7 +86,7 @@ const generatePDF = async (data) => {
           <tr><td><b>ศาสนา</b></td><td>${data.religion}</td></tr>
           <tr><td><b>สถานภาพสมรส</b></td><td>${data.maritalStatus}</td></tr> 
         </table>
-        
+
         <h3>ที่อยู่ปัจจุบัน</h3>
         <table>
           <tr><td><b>บ้านเลขที่</b></td><td>${data.houseNumber}</td></tr>
@@ -102,7 +96,7 @@ const generatePDF = async (data) => {
           <tr><td><b>รหัสไปรษณีย์</b></td><td>${data.postalCode}</td></tr>
           <tr><td><b>เบอร์โทรศัพท์</b></td><td>${data.phoneNumber}</td></tr>
         </table>
-        
+
         <h3>ข้อมูลการศึกษา</h3>
         <table>
           <tr><td><b>ระดับการศึกษา</b></td><td>${data.degreeEarned}</td></tr>
@@ -114,7 +108,6 @@ const generatePDF = async (data) => {
 
         <!-- ✅ หน้าที่ 2: เอกสารแนบ -->
         <div class="page-break"></div>
-
         <h3>เอกสารแนบ</h3>
         <table>
           <tr>
