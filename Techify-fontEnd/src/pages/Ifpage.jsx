@@ -32,7 +32,9 @@ const Ifpage = () => {
       </div>
 
       {/* ✅ แสดง Popup และเปลี่ยนหน้าโดยส่ง jobId ไปด้วย */}
-      {showPopup && <Notification onClose={() => navigate(`/registerFrom/${jobId}`)} />}
+      {showPopup && (
+        <Notification onClose={() => navigate(`/registerFrom/${jobId}`)} />
+      )}
     </section>
   );
 };

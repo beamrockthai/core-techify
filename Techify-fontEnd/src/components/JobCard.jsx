@@ -6,7 +6,7 @@ const JobCard = ({ job }) => {
 
   // ฟังก์ชันกดปุ่มสมัครงาน
   const handleApplyClick = () => {
-    navigate(`/ifpage/${job.id}`);
+    navigate(`/registerFrom/${job.id}`);
   };
 
   // ฟังก์ชันกดปุ่มดูรายละเอียด

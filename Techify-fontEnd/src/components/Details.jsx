@@ -76,7 +76,7 @@ const JobDetail = () => {
             <motion.button
               whileHover={{ scale: 1.05 }} // ✅ Hover effect
               className="btn btn-outline btn-primary w-full"
-              onClick={() => navigate(`/ifpage/${jobId}`)}
+              onClick={() => navigate(`/registerFrom/${jobId}`)}
             >
               สมัครงาน
             </motion.button>
@@ -122,7 +122,6 @@ const JobDetail = () => {
               <p className="text-gray-700 mt-2">{job.Period}</p>
             </div>
           )}
-
           {job.Ror && (
             <div className="mt-4">
               <h3 className="text-md font-bold text-purple-700">อัตราตอบแทน</h3>
